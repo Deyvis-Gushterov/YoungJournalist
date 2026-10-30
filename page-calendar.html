@@ -1,0 +1,33 @@
+<!doctype html><html lang="bg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f3eddf"><title>Календар — Млад журналист</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@400;600&display=swap&subset=cyrillic" rel="stylesheet"><link rel="stylesheet" href="css-style.css"><link rel="stylesheet" href="css-vintage.css"><link rel="stylesheet" href="css-extra-pages.css"><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js-auth-firebase-config.js"></script><script defer src="js-calendar-calendar-page.js"></script><link rel="stylesheet" href="css-complete-redesign.css">
+</head><body><a class="skip-link" href="#main">Към съдържанието</a><header><div class="container"><div class="logo"><h1>Млад журналист</h1><p>Училищен клуб по журналистика</p></div><nav><ul><li><a href="index.html">Начало</a></li><li><a href="page-articles.html">Статии</a></li><li><a href="page-rubrics-public.html">Рубрики</a></li><li><a aria-current="page" href="page-calendar.html">Календар</a></li></ul></nav></div></header><main id="main" class="extra-page container"><div class="page-kicker">УЧИЛИЩЕН АЛМАНАХ · СЪБИТИЯ</div><h1>Календар на училищния живот</h1><p class="page-deck">Срещи, инициативи, празници и важни дати от нашата общност.</p><div class="calendar-toolbar"><button id="calendarPrev" type="button" aria-label="Предишен месец">←</button><h2 id="calendarMonth" aria-live="polite">Зареждане…</h2><button id="calendarNext" type="button" aria-label="Следващ месец">→</button><button id="calendarToday" type="button">Днес</button></div><div id="calendarGrid" class="calendar-grid" aria-live="polite"><p class="loading-note">Зареждаме календара…</p></div><section class="event-agenda"><h2>Предстоящи събития</h2><div id="calendarAgenda"><p class="loading-note">Свързване с Firebase…</p></div></section><p id="calendarStatus" class="connection-note" role="status"></p><a class="back-link" href="index.html">← Обратно към първа страница</a></main><footer class="extra-footer">МЛАД ЖУРНАЛИСТ · УЧИЛИЩНИЯТ ЖИВОТ В ЕДИН КАДЪР</footer>
+<script>
+(() => {
+  const header = document.querySelector('header');
+  const nav = header && header.querySelector('nav');
+  if (!header || !nav) return;
+  let lastY = window.scrollY;
+  let ticking = false;
+  const update = () => {
+    const currentY = Math.max(0, window.scrollY);
+    const delta = currentY - lastY;
+    if (currentY < 90 || delta < -6) {
+      header.classList.remove('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'false');
+    } else if (delta > 6 && currentY > 140) {
+      header.classList.add('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'true');
+    }
+    lastY = currentY;
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  }, { passive: true });
+})();
+</script>
+
+</body></html>

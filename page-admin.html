@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3eddf">
+  <title>Редакционно студио — Млад журналист</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap&subset=cyrillic" rel="stylesheet">
+  <link rel="stylesheet" href="css-editorial-panel.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="js-auth-firebase-config.js"></script>
+  <script src="js-home-home-config.js"></script>
+  <script src="js-rubrics-rubrics-database.js"></script>
+  <script defer src="js-admin-editorial-panel.js"></script>
+  <script defer src="js-polls-admin.js"></script>
+<link rel="stylesheet" href="css-complete-redesign.css">
+</head>
+<body>
+  <div class="studio-shell">
+    <aside class="studio-sidebar">
+      <a class="studio-brand" href="index.html"><span class="brand-mark">МЖ</span><span><strong>Млад журналист</strong><small>РЕДАКЦИОННО СТУДИО</small></span></a>
+      <div class="sidebar-caption">РАБОТНО МЯСТО</div>
+      <nav id="studioNav" class="studio-nav" aria-label="Редакционно меню">
+        <button class="nav-item active" data-panel="overview"><span>▦</span> Обзор</button>
+        <button class="nav-item" data-panel="articles" data-capability="articles"><span>✎</span> Статии <i id="pendingArticleBadge"></i></button>
+        <button class="nav-item" data-panel="rubrics" data-capability="rubrics"><span>▤</span> Рубрики</button>
+        <button class="nav-item" data-panel="events" data-capability="events"><span>▦</span> Календар</button>
+        <button class="nav-item" data-panel="applications" data-capability="applications"><span>✉</span> Кандидатури <i id="applicationBadge"></i></button>
+        <button class="nav-item" data-panel="team" data-capability="team"><span>♙</span> Екип и роли</button>
+        <button class="nav-item" data-panel="media" data-capability="media"><span>▧</span> Медия библиотека</button>
+        <button class="nav-item" data-panel="polls" data-capability="polls"><span>◉</span> Анкети</button>
+        <button class="nav-item" data-panel="spotlight" data-capability="spotlight"><span>✦</span> Акцент на месеца</button>
+      </nav>
+      <div class="sidebar-bottom"><a href="index.html">← Към публичния вестник</a><button id="logoutBtn" type="button">Изход от профила ↗</button></div>
+    </aside>
+
+    <main class="studio-main">
+      <header class="studio-topbar"><div><span class="eyebrow">YOUNG JOURNALIST / EDITORIAL DESK</span><h1 id="pageHeading">Редакционно студио</h1></div><div class="profile-chip"><span class="profile-avatar" id="profileInitials">МЖ</span><span><strong id="profileName">Зареждане…</strong><small id="profileRole">Проверка на достъпа</small></span></div></header>
+      <div id="globalNotice" class="notice" role="status" hidden></div>
+      <div id="loadingState" class="loading-state">Проверяваме профила и правата за достъп…</div>
+
+      <section class="studio-panel active" id="panel-overview">
+        <div class="welcome-block"><div><p class="eyebrow">ДНЕС В РЕДАКЦИЯТА</p><h2>Добре дошли зад страниците.</h2><p>Подгответе следващата история, подредете рубриките и дръжте училищния календар актуален.</p></div><div class="issue-stamp"><span>УЧИЛИЩЕН</span><strong>ВЕСТНИК</strong><small>ГЛАСЪТ НА УЧЕНИЦИТЕ</small></div></div>
+        <div class="stat-grid">
+          <article class="stat-card"><span>Публикувани статии</span><strong id="statArticles">—</strong><small>видими за всички</small></article>
+          <article class="stat-card"><span>Рубрики</span><strong id="statRubrics">—</strong><small>материали в рубриките</small></article>
+          <article class="stat-card"><span>Предстоящи събития</span><strong id="statEvents">—</strong><small>в публичния календар</small></article>
+          <article class="stat-card"><span>Чакащи за преглед</span><strong id="statPending">—</strong><small>статии за преглед</small></article>
+        </div>
+        <div class="overview-columns"><article class="panel-card"><div class="section-heading"><div><p class="eyebrow">БЪРЗИ ДЕЙСТВИЯ</p><h3>Какво ще създаваме?</h3></div></div><div class="quick-actions"><button data-goto="articles" data-capability="articles">＋ Нова статия</button><button data-goto="rubrics" data-capability="rubrics">＋ Материал в рубрика</button><button data-goto="events" data-capability="events">＋ Училищно събитие</button><button data-goto="media" data-capability="media">＋ Качи снимки</button></div></article><article class="panel-card issue-note"><p class="eyebrow">РЕДАКЦИОНЕН РИТЪМ</p><h3>2–3 добри истории всяка седмица.</h3><p>По-добре подготвен материал, проверени факти и ясни снимки, отколкото много публикации наведнъж.</p><p class="note-sign">— Редакционен съвет</p></article></div>
+        <div class="panel-card migration-card" id="migrationCard" hidden><div><h3>Съществуващи публикации</h3><p>Публикуваните по стария начин статии трябва да бъдат копирани в публичния архив, за да се четат без достъп до черновите.</p></div><button id="migrateBtn" class="btn-secondary" type="button">Синхронизирай старите статии</button></div>
+      </section>
+
+      <section class="studio-panel" id="panel-articles" data-capability="articles">
+        <div class="section-intro"><p class="eyebrow">01 / РЕДАКЦИОННО СЪДЪРЖАНИЕ</p><h2>Статии</h2><p>Създавайте материали, добавяйте снимки и видео, изпращайте за преглед или публикувайте.</p></div>
+        <div class="editor-layout"><form id="articleEditorForm" class="panel-card editor-form">
+          <div class="form-heading"><div><span class="eyebrow">НОВА ПУБЛИКАЦИЯ</span><h3 id="articleFormHeading">Напишете история</h3></div><span class="form-number">01</span></div>
+          <input type="hidden" id="editingArticleId">
+          <label>Заглавие *<input id="articleTitle" maxlength="140" required placeholder="Заглавие, което привлича вниманието"></label>
+          <label>Кратко описание *<textarea id="articleExcerpt" rows="2" maxlength="500" required placeholder="Няколко изречения за началната страница"></textarea></label>
+          <div class="form-row"><label>Категория *<select id="articleCategory" required><option value="news">Новини</option><option value="interview">Интервю</option><option value="opinion">Мнение</option><option value="culture">Култура</option><option value="school">Училищен живот</option><option value="useful">Полезно и любопитно</option><option value="fun">Свободно време</option></select></label><label>Автор *<input id="articleAuthor" required maxlength="80" placeholder="Име на автора"></label></div>
+          <label>Текст на статията *<textarea id="articleContent" rows="12" required placeholder="Напишете историята си. Отделяйте абзаците с нов ред."></textarea></label>
+          <label>Адреси на снимки (по един HTTPS URL на ред)<textarea id="articleImageUrl" rows="3" placeholder="https://example.com/image.jpg"></textarea><small>До 6 директни адреса. Не качвайте файлове.</small></label>
+          <label>Видео към статията (YouTube / TikTok URL)<input id="articleVideoUrl" type="url" placeholder="https://www.youtube.com/watch?v=… или TikTok линк"></label>
+          <div class="form-actions"><button class="btn-secondary" type="submit" data-mode="draft" id="saveDraftBtn">Запази като чернова</button><button class="btn-primary" type="submit" data-mode="publish" id="publishArticleBtn">Публикувай</button><button class="btn-quiet" type="button" id="cancelArticleEdit" hidden>Отказ</button></div>
+          <p class="form-feedback" id="articleFormFeedback" role="status"></p>
+        </form><aside class="side-note"><span>✎</span><h3>Редакторска бележка</h3><p>Проверете имената, датите и фактите. Използвайте само снимки, за които имате разрешение.</p><p>Репортерите изпращат материалите за преглед. Редакторите и администраторите могат да ги публикуват.</p></aside></div>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">АРХИВ НА РЕДАКЦИЯТА</p><h3>Вашите и всички статии</h3></div><button id="refreshArticlesBtn" class="btn-quiet" type="button">↻ Обнови</button></div><div id="editorialArticlesList" class="manage-list"><p class="muted">Зареждане…</p></div></div>
+      </section>
+
+      <section class="studio-panel" id="panel-rubrics" data-capability="rubrics">
+        <div class="section-intro"><p class="eyebrow">02 / РЕДАКЦИОННИ РУБРИКИ</p><h2>Рубрики</h2><p>Всяка рубрика има собствена тема, архив и визуален облик. Публикациите тук се виждат на публичната страница „Рубрики“.</p></div>
+        <form id="rubricEditorForm" class="panel-card editor-form narrow-form"><input type="hidden" id="editingRubricId"><div class="form-heading"><div><span class="eyebrow">РЕДАКЦИОННО СЪДЪРЖАНИЕ</span><h3 id="rubricFormHeading">Добавете към рубрика</h3></div><span class="form-number">02</span></div>
+          <label>Рубрика *<select id="rubricType" required></select></label>
+          <label>Заглавие *<input id="rubricTitle" maxlength="140" required placeholder="Заглавие"></label>
+          <label>Съдържание *<textarea id="rubricContent" rows="9" required placeholder="Текст на материала"></textarea></label>
+          <div class="form-row"><label>Автор *<input id="rubricAuthor" maxlength="80" required placeholder="Име на автора"></label><label>Тагове<input id="rubricTags" maxlength="160" placeholder="наука, училище, култура"></label></div>
+          <label>Адреси на снимки (по един HTTPS URL на ред)<textarea id="rubricImageUrl" rows="3" placeholder="https://example.com/image.jpg"></textarea><small>До 6 директни адреса. Не качвайте файлове.</small></label>
+          <div class="form-actions"><button class="btn-primary" type="submit" id="saveRubricBtn">Публикувай рубрика</button><button class="btn-secondary" type="button" id="cancelRubricEdit" hidden>Отказ</button></div><p class="form-feedback" id="rubricFormFeedback" role="status"></p>
+        </form>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">ПУБЛИКУВАНИ МАТЕРИАЛИ</p><h3>Последни рубрики</h3></div><button class="btn-quiet" id="refreshRubricsBtn" type="button">↻ Обнови</button></div><div id="editorialRubricsList" class="manage-list"><p class="muted">Зареждане…</p></div></div>
+      </section>
+
+      <section class="studio-panel" id="panel-events" data-capability="events">
+        <div class="section-intro"><p class="eyebrow">03 / УЧИЛИЩЕН ЖИВОТ</p><h2>Календар</h2><p>Добавените събития се показват автоматично в публичния календар на сайта.</p></div>
+        <div class="editor-layout"><form id="eventEditorForm" class="panel-card editor-form"><input id="editingEventId" type="hidden" value="">
+          <div class="form-heading"><div><span class="eyebrow">КАЛЕНДАР</span><h3 id="eventFormHeading">Планирайте дата</h3></div><span class="form-number">03</span></div>
+          <label>Име на събитието *<input id="eventTitle" maxlength="120" required placeholder="Например: Коледен базар"></label>
+          <label>Описание<textarea id="eventDescription" rows="4" placeholder="Какво ще се случи?"></textarea></label>
+          <div class="form-row"><label>Дата *<input id="eventDate" type="date" required></label><label>Час *<input id="eventTime" type="time" required></label></div>
+          <label>Място *<input id="eventLocation" maxlength="100" required placeholder="Училищен двор"></label>
+          <div class="form-actions"><button class="btn-primary" id="eventSubmitBtn" type="submit">＋ Добави събитие</button><button class="btn-quiet" id="cancelEventEdit" type="button" hidden>Отказ</button></div><p class="form-feedback" id="eventFormFeedback" role="status"></p>
+        </form><aside class="side-note"><span>▦</span><h3>Календар за всички</h3><p>Проверете датата и часа преди публикуване. Събитията са публични и видими за ученици, учители и родители.</p></aside></div>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">ПУБЛИЧНА ПРОГРАМА</p><h3>Планирани събития</h3></div><button class="btn-quiet" id="refreshEventsBtn" type="button">↻ Обнови</button></div><div id="editorialEventsList" class="manage-list"><p class="muted">Зареждане…</p></div></div>
+      </section>
+
+      <section class="studio-panel" id="panel-applications" data-capability="applications">
+        <div class="section-intro"><p class="eyebrow">04 / НОВИ ХОРА В ЕКИПА</p><h2>Кандидатури</h2><p>Прегледайте заявките от формата „Стани част от екипа“. Одобрението маркира желаната роля; след регистрация администраторът назначава ролята към Firebase UID.</p></div>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">ВХОДЯЩА ПОЩА</p><h3>Заявки за присъединяване</h3></div><button id="refreshApplicationsBtn" class="btn-quiet" type="button">↻ Обнови</button></div><div id="applicationsList" class="manage-list">Зареждане…</div></div>
+      </section>
+
+      <section class="studio-panel" id="panel-team" data-capability="team">
+        <div class="section-intro"><p class="eyebrow">05 / ДОСТЪП И ОТГОВОРНОСТИ</p><h2>Екип и роли</h2><p>Назначавайте роли на вече регистрирани потребители. Не споделяйте профили и не назначавайте администратор без нужда.</p></div>
+        <div class="role-guide panel-card"><div><strong>Администратор</strong><span>Пълен достъп, роли, кандидатури и настройки.</span></div><div><strong>Редактор</strong><span>Статии, рубрики, събития и модерация.</span></div><div><strong>Репортер</strong><span>Създава статии и ги изпраща за преглед.</span></div><div><strong>Фотограф</strong><span>Качва снимки в медийната библиотека.</span></div><div><strong>Дизайнер</strong><span>Подготвя изображения и визуални материали.</span></div></div>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">РЕГИСТРИРАНИ ПРОФИЛИ</p><h3>Потребители</h3></div><button id="refreshUsersBtn" class="btn-quiet" type="button">↻ Обнови</button></div><div id="usersList" class="manage-list">Зареждане…</div></div>
+      </section>
+
+      <section class="studio-panel" id="panel-media" data-capability="media">
+        <div class="section-intro"><p class="eyebrow">07 / СНИМКИ И ВИДЕО</p><h2>Медия библиотека</h2><p>Добавяйте директни HTTPS адреси на изображения от интернет. Снимките не се качват в сайта.</p></div>
+        <form id="mediaUploadForm" class="panel-card editor-form narrow-form"><label>URL адреси на изображения<textarea id="mediaImageUrls" rows="4" required placeholder="https://example.com/photo.jpg&#10;https://example.com/photo-2.jpg"></textarea><small>Поставете директни HTTPS адреси, по един на ред. Не се качват файлове.</small></label><div class="form-actions"><button type="submit" class="btn-primary">Добави адресите</button></div><p class="form-feedback" id="mediaFeedback" role="status"></p></form>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">ВАШИТЕ КАЧВАНИЯ</p><h3>Медия</h3></div><button id="refreshMediaBtn" class="btn-quiet" type="button">↻ Обнови</button></div><div id="mediaList" class="media-grid">Зареждане…</div></div>
+      </section>
+
+      <section class="studio-panel" id="panel-polls" data-capability="polls">
+        <div class="section-intro"><p class="eyebrow">08 / ОБРАТНА ВРЪЗКА</p><h2>Анкети</h2><p>Създавайте анкети, публикувайте ги на сайта и следете резултатите. Гласуването е без регистрация.</p></div>
+        <form id="pollEditorForm" class="panel-card editor-form narrow-form"><input type="hidden" id="editingPollId"><label>Въпрос *<input id="pollQuestion" maxlength="180" required placeholder="Какво мислите за…"></label><label>Кратко описание<textarea id="pollDescription" rows="2" maxlength="300"></textarea></label><label>Отговори *<textarea id="pollOptions" rows="5" required placeholder="Един отговор на ред"></textarea><small>Добавете между 2 и 8 отговора.</small></label><div class="form-row"><label>Начало<input id="pollStartsAt" type="datetime-local"></label><label>Край<input id="pollEndsAt" type="datetime-local"></label></div><div class="form-actions"><button class="btn-primary" type="submit">Запази анкетата</button><button class="btn-secondary" type="button" id="cancelPollEdit" hidden>Отказ</button></div><p id="pollFormFeedback" class="form-feedback" role="status"></p></form>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">УПРАВЛЕНИЕ</p><h3>Всички анкети</h3></div><button id="refreshPollsBtn" class="btn-quiet" type="button">↻ Обнови</button></div><div id="adminPollsList" class="manage-list">Зареждане…</div></div>
+        <div class="panel-card list-card"><div class="section-heading"><div><p class="eyebrow">РЕЗУЛТАТИ</p><h3>Статистика на избраната анкета</h3></div></div><div id="pollStats"><p class="muted">Изберете анкета от списъка.</p></div></div>
+      </section>
+      <section class="studio-panel" id="panel-spotlight" data-capability="spotlight">
+        <div class="section-intro"><p class="eyebrow">08 / ПЪРВА СТРАНИЦА</p><h2>Акцент на месеца</h2><p>Тази история се показва в големия банер на началната страница.</p></div>
+        <form id="spotlightForm" class="panel-card editor-form narrow-form"><label>Малък надпис<input id="spotlightKicker" maxlength="60" required></label><label>Заглавие<input id="spotlightTitle" maxlength="140" required></label><label>Описание<textarea id="spotlightText" rows="4" maxlength="500" required></textarea></label><label>Линк към историята<input id="spotlightLink" placeholder="page-articles.html"></label><label>Текст на бутона<input id="spotlightButton" maxlength="40" value="Прочети повече"></label><div class="form-actions"><button class="btn-primary" type="submit">Запази акцента</button></div><p class="form-feedback" id="spotlightFeedback" role="status"></p></form>
+      </section>
+
+      <footer class="studio-footer">МЛАД ЖУРНАЛИСТ · ВСЯКА ИСТОРИЯ ЗАСЛУЖАВА СТРАНИЦА</footer>
+    </main>
+  </div>
+
+<script>
+(() => {
+  const header = document.querySelector('header');
+  const nav = header && header.querySelector('nav');
+  if (!header || !nav) return;
+  let lastY = window.scrollY;
+  let ticking = false;
+  const update = () => {
+    const currentY = Math.max(0, window.scrollY);
+    const delta = currentY - lastY;
+    if (currentY < 90 || delta < -6) {
+      header.classList.remove('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'false');
+    } else if (delta > 6 && currentY > 140) {
+      header.classList.add('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'true');
+    }
+    lastY = currentY;
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  }, { passive: true });
+})();
+</script>
+
+</body>
+</html>

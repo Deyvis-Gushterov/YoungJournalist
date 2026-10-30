@@ -1,0 +1,541 @@
+/* RUBRICS PUBLIC PAGE STYLES */
+
+/* Hero Section */
+.rubrics-hero {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    padding: 100px 0 60px;
+    text-align: center;
+    margin-top: 80px;
+}
+
+.rubrics-hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.rubrics-hero p {
+    font-size: 1.3rem;
+    max-width: 700px;
+    margin: 0 auto;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+/* Rubrics Navigation */
+.rubrics-nav-section {
+    padding: 30px 0;
+    background: #f8f9fa;
+    position: sticky;
+    top: 80px;
+    z-index: 100;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.rubrics-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.rubric-tab {
+    padding: 12px 25px;
+    border: none;
+    background: white;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rubric-tab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.rubric-tab.active {
+    background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+    color: white;
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+}
+
+/* Rubrics Content */
+.rubrics-content-section {
+    padding: 60px 0;
+    background: white;
+    min-height: 500px;
+}
+
+/* Loading State */
+.loading-rubrics {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.loading-rubrics p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Error State */
+.error-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #e74c3c;
+    margin-bottom: 20px;
+}
+
+.error-state h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.error-state .btn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Empty State */
+.empty-rubrics {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-icon {
+    font-size: 5rem;
+    color: #bdc3c7;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-rubrics h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.empty-rubrics p {
+    color: #7f8c8d;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Rubrics Grid */
+.rubrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Rubric Card */
+.rubric-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    border: 2px solid transparent;
+}
+
+.rubric-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.rubric-header {
+    padding: 25px 25px 15px;
+}
+
+.rubric-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.rubric-type-badge.recipes {
+    background: #FF6B6B20;
+    color: #FF6B6B;
+}
+
+.rubric-type-badge.interesting {
+    background: #4ECDC420;
+    color: #4ECDC4;
+}
+
+.rubric-type-badge.jokes {
+    background: #FFD16620;
+    color: #FFD166;
+}
+
+.rubric-title {
+    font-size: 1.4rem;
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    line-height: 1.4;
+}
+
+.rubric-image {
+    height: 200px;
+    overflow: hidden;
+    margin: 0 25px 20px 25px;
+    border-radius: 10px;
+}
+
+.rubric-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.rubric-card:hover .rubric-image img {
+    transform: scale(1.05);
+}
+
+.rubric-content {
+    padding: 0 25px 20px 25px;
+    color: #5d6d7e;
+    line-height: 1.6;
+}
+
+.rubric-content p {
+    margin: 0 0 10px 0;
+}
+
+.rubric-footer {
+    padding: 15px 25px;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.rubric-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.rubric-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.rubric-tags .tag {
+    background: #e9ecef;
+    color: #6c757d;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Back to Home */
+.back-to-home {
+    display: inline-block;
+    margin-top: 15px;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.back-to-home:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rubrics-hero {
+        padding: 80px 0 40px;
+    }
+    
+    .rubrics-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .rubrics-tabs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .rubric-tab {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .rubrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .rubric-header,
+    .rubric-content,
+    .rubric-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .rubric-image {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+/* ===== READ MORE BUTTON ===== */
+.rubric-read-more-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 9px 20px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+}
+
+.rubric-read-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,107,107,0.4);
+}
+
+/* ===== RUBRIC DETAIL MODAL ===== */
+.rubric-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.rubric-modal-box {
+    background: white;
+    border-radius: 20px;
+    max-width: 780px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+    animation: rubricModalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes rubricModalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.rubric-modal-close {
+    position: sticky;
+    top: 16px;
+    float: right;
+    margin: 16px 16px 0 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f3f4;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    z-index: 10;
+}
+
+.rubric-modal-close:hover {
+    background: #e0e0e0;
+    transform: rotate(90deg);
+}
+
+.rubric-modal-body-inner {
+    padding: 30px 35px 40px;
+    clear: both;
+}
+
+.rubric-modal-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.rubric-modal-type-badge.recipes   { background: #FF6B6B20; color: #FF6B6B; }
+.rubric-modal-type-badge.interesting { background: #4ECDC420; color: #4ECDC4; }
+.rubric-modal-type-badge.jokes     { background: #FFD16620; color: #c9a200; }
+
+.rubric-modal-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    line-height: 1.3;
+    margin: 0 0 14px 0;
+}
+
+.rubric-modal-meta {
+    display: flex;
+    gap: 20px;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+
+.rubric-modal-image {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    max-height: 380px;
+}
+
+.rubric-modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.rubric-modal-content {
+    color: #34495e;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.rubric-modal-content p {
+    margin: 0 0 14px 0;
+}
+
+.rubric-modal-tags {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-top: 1px solid #eee;
+    padding-top: 18px;
+}
+
+@media (max-width: 600px) {
+    .rubric-modal-box {
+        border-radius: 14px;
+    }
+    .rubric-modal-body-inner {
+        padding: 20px;
+    }
+    .rubric-modal-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===== Rubrics page - newspaper look + two-level filter ===== */
+.rubrics-hero {
+    background: var(--paper-2, #ebe2cd);
+    color: var(--ink, #1d1b18);
+    margin-top: 0;
+    padding: 56px 0 44px;
+    border-top: 3px double var(--ink, #1d1b18);
+    border-bottom: 1px solid var(--hair, #cbbfa5);
+}
+.rubrics-hero h1 { font-size: 2.8rem; text-shadow: none; color: var(--ink, #1d1b18); }
+.rubrics-hero p { font-size: 1.1rem; color: var(--ink-2, #5a5347); opacity: 1; }
+
+.rubrics-nav-section {
+    position: static;
+    top: auto;
+    padding: 22px 0 10px;
+    background: var(--paper-3, #faf6ec);
+    box-shadow: none;
+    border-bottom: 1px solid var(--hair, #cbbfa5);
+}
+.rubrics-tabs.two-level { flex-direction: column; align-items: center; gap: 12px; }
+.rubric-cats, .rubric-subgroup { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.rubric-subgroup[hidden] { display: none; }
+.rubric-subtabs { min-height: 0; }
+
+.rubrics-tabs.two-level .rubric-tab,
+.rubrics-tabs.two-level .rubric-cat {
+    padding: 8px 18px;
+    font-size: .95rem;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-weight: 600;
+    border: 1px solid var(--ink, #1d1b18);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--ink, #1d1b18);
+    box-shadow: none;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+.rubrics-tabs.two-level .rubric-tab:hover,
+.rubrics-tabs.two-level .rubric-cat:hover { transform: none; box-shadow: none; background: var(--paper-2, #ebe2cd); }
+.rubrics-tabs.two-level .rubric-cat.active,
+.rubrics-tabs.two-level .rubric-tab.active { background: var(--ink, #1d1b18); color: var(--paper, #f4eddd); }
+/* second row = lighter, accent coloured */
+.rubric-subgroup .rubric-tab { border-color: var(--hair, #cbbfa5); font-size: .88rem; padding: 6px 14px; }
+.rubric-subgroup .rubric-tab.active { background: var(--accent, #8a2c22); border-color: var(--accent, #8a2c22); color: #fff; }
+
+.rubrics-content-section { background: transparent; padding: 40px 0 70px; }
+.rubrics-count { background: transparent !important; border: 0 !important; border-bottom: 1px solid var(--hair, #cbbfa5) !important; border-radius: 0 !important; padding: 0 0 12px !important; }
+.rubrics-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.rubric-card {
+    background: var(--paper-3, #faf6ec);
+    border: 1px solid var(--hair, #cbbfa5);
+    border-radius: 2px;
+    box-shadow: 0 2px 0 var(--hair, #cbbfa5);
+    display: flex;
+    flex-direction: column;
+}
+.rubric-card:hover { transform: translateY(-3px); box-shadow: 0 6px 0 var(--hair, #cbbfa5); }
+.rubric-footer { margin-top: auto; }
+.rubric-title { font-family: var(--head, Georgia, serif); }
+.rubric-type-badge, .rubric-modal-type-badge { border-radius: 2px; font-family: var(--sans, system-ui, sans-serif); font-size: .8rem; }
+
+@media (max-width: 768px) {
+    .rubrics-hero h1 { font-size: 2rem; }
+    .rubrics-tabs.two-level .rubric-tab,
+    .rubrics-tabs.two-level .rubric-cat { width: auto; }
+}
+
+.rubric-modal-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:22px 0}
+.rubric-modal-gallery img{display:block;width:100%;max-height:360px;object-fit:cover;border:1px solid var(--hair,#cbbfa5)}
+.rubric-modal-gallery img:only-child{grid-column:1/-1;max-height:520px}
+.rubric-image img{width:100%;height:100%;object-fit:cover;display:block}
+.rubric-read-more-btn{cursor:pointer}
+@media(max-width:600px){.rubric-modal-gallery{grid-template-columns:1fr}.rubric-modal-gallery img{max-height:320px}}

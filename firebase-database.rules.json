@@ -1,0 +1,109 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        ".write": "auth != null && ((root.child('users').child(auth.uid).child('role').val() === 'admin' && ((data.child('role').val() === 'admin' && newData.child('role').val() === 'admin') || (data.child('role').val() !== 'admin' && newData.child('role').val() !== 'admin'))) || (auth.uid === $uid && ((!data.exists() && newData.child('role').val() === 'user') || (data.exists() && newData.child('role').val() === data.child('role').val()))))"
+      },
+      ".indexOn": [
+        "email",
+        "role"
+      ]
+    },
+    "articles": {
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor' || ((root.child('users').child(auth.uid).child('role').val() === 'reporter' || root.child('users').child(auth.uid).child('role').val() === 'user') && query.orderByChild === 'authorId' && query.equalTo === auth.uid))",
+      ".indexOn": [
+        "date",
+        "createdAt",
+        "authorId",
+        "status",
+        "redactorId"
+      ],
+      "$articleId": {
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor' || (!data.exists() && newData.child('authorId').val() === auth.uid && newData.child('status').val() === 'submitted' && (root.child('users').child(auth.uid).child('role').val() === 'reporter' || root.child('users').child(auth.uid).child('role').val() === 'user')) || (data.child('authorId').val() === auth.uid && newData.child('authorId').val() === auth.uid && newData.child('status').val() === data.child('status').val()))"
+      }
+    },
+    "publishedArticles": {
+      ".read": true,
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')",
+      ".indexOn": [
+        "publishedAt",
+        "date",
+        "category"
+      ]
+    },
+    "rubrics": {
+      ".read": true,
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor' || root.child('users').child(auth.uid).child('role').val() === 'designer')",
+      ".indexOn": [
+        "date",
+        "type"
+      ]
+    },
+    "events": {
+      ".read": true,
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')",
+      ".indexOn": [
+        "timestamp"
+      ]
+    },
+    "siteContent": {
+      ".read": true,
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
+    "applications": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "$applicationId": {
+        ".write": "(auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin') || (!data.exists() && newData.child('status').val() === 'new' && newData.child('name').isString() && newData.child('name').val().length >= 2 && newData.child('name').val().length <= 80 && newData.child('email').isString() && newData.child('email').val().matches(/^\\S+@\\S+\\.\\S+$/) && newData.child('class').isString() && newData.child('class').val().length <= 30 && newData.child('message').isString() && newData.child('message').val().length >= 10 && newData.child('message').val().length <= 1500 && newData.child('desiredRole').val().matches(/^(reporter|photographer|designer|redactor)$/))"
+      }
+    },
+    "commentSubmissions": {
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')",
+      "$articleId": {
+        "$commentId": {
+          ".write": "(auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')) || (auth != null && !data.exists() && newData.child('authorId').val() === auth.uid && newData.child('status').val() === 'pending' && newData.child('body').isString() && newData.child('body').val().length <= 500)"
+        }
+      }
+    },
+    "publicArticleComments": {
+      ".read": true,
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')"
+    },
+    "mediaLibrary": {
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor' || root.child('users').child(auth.uid).child('role').val() === 'photographer' || root.child('users').child(auth.uid).child('role').val() === 'designer')",
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor' || root.child('users').child(auth.uid).child('role').val() === 'photographer' || root.child('users').child(auth.uid).child('role').val() === 'designer')",
+      ".indexOn": [
+        "uploadedBy",
+        "createdAt"
+      ]
+    },
+    "polls": {
+      ".read": true,
+      "$pollId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+        "votes": {
+          ".read": true,
+          "$voterId": {
+            ".write": "!data.exists() && root.child('polls').child($pollId).child('status').val() === 'active' && newData.child('option').isNumber() && newData.child('option').val() >= 0 && newData.child('option').val() < root.child('polls').child($pollId).child('options').numChildren()"
+          }
+        }
+      }
+    },
+    "queues": {
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')",
+      "redactorQueue": {
+        "$articleId": {
+          ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor' || (root.child('articles').child($articleId).child('authorId').val() === auth.uid && root.child('articles').child($articleId).child('status').val() === 'submitted'))"
+        }
+      },
+      "adminQueue": {
+        "$articleId": {
+          ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "polls": {
+    ".read": true,
+    "$pollId": {
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "votes": {
+        ".read": true,
+        "$voterId": {
+          ".write": "!data.exists() && root.child('polls').child($pollId).child('status').val() === 'active' && newData.child('option').isNumber() && newData.child('option').val() >= 0 && newData.child('option').val() < root.child('polls').child($pollId).child('options').numChildren()"
+        }
+      }
+    }
+  }
+}

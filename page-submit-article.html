@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Напиши статия - Млад журналист</title>
+    <link rel="stylesheet" href="css-style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js-auth-firebase-config.js"></script>
+    <style>
+        body { padding-top: 100px; background: #f5f7fa; }
+        .submit-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        .submit-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .submit-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        #content {
+            min-height: 300px;
+        }
+        
+        .image-inputs {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .image-input {
+            margin-bottom: 15px;
+        }
+        
+        .image-input label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .image-number {
+            background: #3498db;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .submit-btn {
+            background: #2ecc71;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .guidelines {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .guidelines h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .guidelines ul {
+            padding-left: 20px;
+        }
+        
+        .guidelines li {
+            margin-bottom: 8px;
+            color: #856404;
+        }
+    </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap&subset=cyrillic" rel="stylesheet">
+    <link rel="stylesheet" href="css-vintage.css">
+<link rel="stylesheet" href="css-complete-redesign.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Млад журналист</h1>
+                <p>Напиши статия</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">← Назад към сайта</a></li>
+                    <li><a href="page-user-dashboard.html">📝 Моите статии</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="submit-container">
+        
+        <div class="submit-header">
+            <h1>✏️ Напиши нова статия</h1>
+            <p>Сподели своята история с читателите на "Млад журналист"</p>
+            <p><strong>Статус:</strong> <span id="userStatus">Не сте влезли в системата</span></p>
+        </div>
+
+        
+        <div class="submit-form">
+            <form id="articleForm">
+                <div class="form-group">
+                    <label for="title">Заглавие на статията *</label>
+                    <input type="text" id="title" placeholder="Въведете заглавие" required maxlength="200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="excerpt">Кратко описание *</label>
+                    <textarea id="excerpt" placeholder="Кратко описание, което ще се покаже в списъка със статии..." required maxlength="500"></textarea>
+                    <small style="color: #666;">Максимум 500 символа</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Пълен текст на статията *</label>
+                    <textarea id="content" placeholder="Напишете пълния текст на статията си тук..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Категория *</label>
+                    <select id="category" required>
+                        <option value="">Изберете категория</option>
+                        <option value="news">Новини</option>
+                        <option value="interview">Интервю</option>
+                        <option value="opinion">Мнение</option>
+                        <option value="culture">Култура</option>
+                        <option value="sport">Спорт</option>
+                        <option value="education">Образование</option>
+                        <option value="technology">Технологии</option>
+                    </select>
+                </div>
+                
+                
+                <div class="image-inputs">
+                    <h3>Снимки (по избор)</h3>
+                    <p>Можете да добавите до 6 снимки към статията си</p>
+                    
+                    <div class="image-input">
+                        <label>
+                            <span class="image-number">1</span>
+                            Основна снимка:
+                        </label>
+                        <input type="url" id="image1" placeholder="https://example.com/image.jpg">
+                        <small>URL на основна снимка (по избор)</small>
+                    </div>
+                    
+                    <div class="image-input">
+                        <label>
+                            <span class="image-number">2</span>
+                            Допълнителна снимка:
+                        </label>
+                        <input type="url" id="image2" placeholder="https://example.com/image2.jpg">
+                    </div>
+                    
+                    <div class="image-input">
+                        <label>
+                            <span class="image-number">3</span>
+                            Допълнителна снимка:
+                        </label>
+                        <input type="url" id="image3" placeholder="https://example.com/image3.jpg">
+                    </div>
+                    
+                    <div class="image-input">
+                        <label>
+                            <span class="image-number">4</span>
+                            Допълнителна снимка:
+                        </label>
+                        <input type="url" id="image4" placeholder="https://example.com/image4.jpg">
+                    </div>
+                    
+                    <div class="image-input">
+                        <label>
+                            <span class="image-number">5</span>
+                            Допълнителна снимка:
+                        </label>
+                        <input type="url" id="image5" placeholder="https://example.com/image5.jpg">
+                    </div>
+                    
+                    <div class="image-input">
+                        <label>
+                            <span class="image-number">6</span>
+                            Допълнителна снимка:
+                        </label>
+                        <input type="url" id="image6" placeholder="https://example.com/image6.jpg">
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">📤 Изпрати статия за преглед</button>
+            </form>
+            
+            <div id="message" class="message"></div>
+        </div>
+        
+        
+        <div class="guidelines">
+            <h3>📝 Указания за писане:</h3>
+            <ul>
+                <li>Статиите трябва да са оригинални и да не нарушават авторски права</li>
+                <li>Използвайте правилен български език и правопис</li>
+                <li>Заглавието трябва да е кратко и информативно</li>
+                <li>Краткото описание трябва да даде представа за съдържанието</li>
+                <li>Всички статии преминават преглед от редактор преди публикуване</li>
+                <li>Ще получите известие, когато статията ви бъде одобрена или отхвърлена</li>
+                <li>Може да проследявате статуса на статиите си в "Моите статии"</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+
+    </footer>
+
+    <script>
+        
+        auth.onAuthStateChanged(async (user) => {
+            const userStatus = document.getElementById('userStatus');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (user) {
+                userStatus.innerHTML = `Влезли сте като: <strong>${user.email}</strong>`;
+                submitBtn.disabled = false;
+            } else {
+                userStatus.innerHTML = '<span style="color: #e74c3c;">Не сте влезли в системата. Моля, влезте от началната страница.</span>';
+                submitBtn.disabled = true;
+            }
+        });
+        
+        
+        document.getElementById('articleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Моля, влезте в системата, за да изпратите статия.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            
+            const title = document.getElementById('title').value.trim();
+            const excerpt = document.getElementById('excerpt').value.trim();
+            const content = document.getElementById('content').value.trim();
+            const category = document.getElementById('category').value;
+            
+            
+            const images = [];
+            for (let i = 1; i <= 6; i++) {
+                const imgUrl = document.getElementById(`image${i}`).value.trim();
+                if (imgUrl) images.push(imgUrl);
+            }
+            
+            
+            if (!title || !excerpt || !content || !category) {
+                showMessage('Моля, попълнете всички задължителни полета.', 'error');
+                return;
+            }
+            
+            if (excerpt.length > 500) {
+                showMessage('Краткото описание не трябва да надвишава 500 символа.', 'error');
+                return;
+            }
+            
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Изпращане...';
+            submitBtn.disabled = true;
+            
+            try {
+                
+const userSnapshot = await db.ref(`users/${user.uid}`).once('value');
+const userData = userSnapshot.val();
+
+const articleData = {
+    title: title,
+    excerpt: excerpt,
+    content: content,
+    author: userData.displayName || user.email.split('@')[0],  
+    authorId: user.uid,
+    authorEmail: user.email,
+    category: category,
+    status: 'submitted',  
+    submittedAt: firebase.database.ServerValue.TIMESTAMP,
+    submittedTo: 'redactors',
+    version: 1,
+    
+    imageUrl: images[0] || '',
+    imageUrl2: images[1] || '',
+    imageUrl3: images[2] || '',
+    imageUrl4: images[3] || '',
+    imageUrl5: images[4] || '',
+    imageUrl6: images[5] || ''
+};
+                
+                const newArticleRef = db.ref('articles').push();
+                await newArticleRef.set(articleData);
+                
+                
+                // The editorial queue is derived from articles.status === 'submitted'.
+                
+                
+                await db.ref(`users/${user.uid}`).update({
+                    articlesSubmitted: firebase.database.ServerValue.increment(1),
+                    lastSubmission: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                
+                await db.ref(`articles/${newArticleRef.key}/history/submitted`).set({
+                    content: content,
+                    editedBy: user.uid,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    notes: 'Първоначално подаване'
+                });
+                
+                
+                showMessage('✅ Статията е изпратена успешно за преглед! Може да проследите статуса ѝ в "Моите статии".', 'success');
+                
+                
+                document.getElementById('articleForm').reset();
+                
+                
+                const userArticlesCount = (userData.articlesSubmitted || 0) + 1;
+                document.getElementById('userStatus').innerHTML = 
+                    `Влезли сте като: <strong>${user.email}</strong> | Изпратени статии: ${userArticlesCount}`;
+                    
+            } catch (error) {
+                console.error('Error submitting article:', error);
+                showMessage(`❌ Грешка при изпращане: ${error.message}`, 'error');
+            } finally {
+                
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 10000);
+            }
+        }
+        
+        
+        let autoSaveTimeout;
+        function autoSaveDraft() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const title = document.getElementById('title').value.trim();
+            const excerpt = document.getElementById('excerpt').value.trim();
+            const content = document.getElementById('content').value.trim();
+            
+            if (title || excerpt || content) {
+                
+                const draft = { title, excerpt, content };
+                localStorage.setItem('articleDraft', JSON.stringify(draft));
+                console.log('💾 Черновата е запазена автоматично');
+            }
+        }
+        
+        
+        function loadDraft() {
+            const draft = localStorage.getItem('articleDraft');
+            if (draft) {
+                const { title, excerpt, content } = JSON.parse(draft);
+                if (title) document.getElementById('title').value = title;
+                if (excerpt) document.getElementById('excerpt').value = excerpt;
+                if (content) document.getElementById('content').value = content;
+            }
+        }
+        
+        
+        document.querySelectorAll('#title, #excerpt, #content').forEach(input => {
+            input.addEventListener('input', () => {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(autoSaveDraft, 30000);
+            });
+        });
+        
+        
+        document.addEventListener('DOMContentLoaded', loadDraft);
+    </script>
+
+<script>
+(() => {
+  const header = document.querySelector('header');
+  const nav = header && header.querySelector('nav');
+  if (!header || !nav) return;
+  let lastY = window.scrollY;
+  let ticking = false;
+  const update = () => {
+    const currentY = Math.max(0, window.scrollY);
+    const delta = currentY - lastY;
+    if (currentY < 90 || delta < -6) {
+      header.classList.remove('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'false');
+    } else if (delta > 6 && currentY > 140) {
+      header.classList.add('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'true');
+    }
+    lastY = currentY;
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  }, { passive: true });
+})();
+</script>
+
+</body>
+</html>

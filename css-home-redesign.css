@@ -1,0 +1,193 @@
+/* =========================================================
+   Homepage redesign: spotlight, 4 sections, poll, footer
+   Loaded after vintage.css (uses its :root tokens).
+   ========================================================= */
+
+/* ---------- Spotlight ("Акцент на месеца") ---------- */
+section.hero.home-spotlight {
+  background: var(--ink, #1d1b18) !important;
+  color: var(--paper, #f4eddd) !important;
+  padding: 90px 0 80px !important;
+  text-align: center;
+  border-bottom: 4px double var(--accent, #8a2c22);
+}
+.home-spotlight .hero-content { max-width: 820px; margin: 0 auto; }
+.home-spotlight h2 { color: var(--paper, #f4eddd) !important; font-size: clamp(2rem, 5vw, 3.4rem); margin: 10px 0 18px; }
+.home-spotlight .spot-kicker {
+  font-family: var(--sans, sans-serif); text-transform: uppercase; letter-spacing: .2em;
+  font-size: .8rem; font-weight: 700; color: #e8c987; margin: 0;
+}
+.home-spotlight .spot-text { font-size: 1.15rem; color: #e6dcc6 !important; max-width: 640px; margin: 0 auto 28px; }
+.spot-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.home-spotlight .btn { background: var(--accent, #8a2c22) !important; color: #fff !important; border: 1px solid var(--accent, #8a2c22) !important; border-radius: 2px !important; }
+.home-spotlight .btn.spot-secondary { background: transparent !important; border-color: var(--paper, #f4eddd) !important; }
+.spot-welcome { font-family: var(--sans, sans-serif); font-size: .85rem; color: #bfb49b; margin-top: 26px; }
+
+/* ---------- Four sections ---------- */
+.home-sections-wrap { padding: 56px 0 30px; }
+.home-section-title { text-align: center; margin-bottom: 30px; }
+.home-section-title p { color: var(--ink-2, #5a5347); margin: 6px 0 0; }
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.home-card {
+  display: flex; flex-direction: column; text-decoration: none; color: inherit;
+  background: var(--paper-3, #faf6ec); border: 1px solid var(--hair, #cbbfa5);
+  box-shadow: 0 2px 0 var(--hair, #cbbfa5); transition: transform .2s, box-shadow .2s;
+}
+.home-card:hover { transform: translateY(-3px); box-shadow: 0 6px 0 var(--hair, #cbbfa5); }
+.home-card-thumb {
+  position: relative; height: 150px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  background: repeating-linear-gradient(45deg, var(--paper-2, #ebe2cd), var(--paper-2, #ebe2cd) 10px, var(--paper, #f4eddd) 10px, var(--paper, #f4eddd) 20px);
+  border-bottom: 1px solid var(--hair, #cbbfa5);
+}
+.home-card-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.home-card:not(.no-img) .home-card-emoji { display: none; }
+.home-card-emoji { font-size: 3rem; opacity: .75; }
+.home-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.home-card-body h3 { margin: 0; font-size: 1.2rem; }
+.home-card-body p { margin: 0; color: var(--ink-2, #5a5347); font-size: .98rem; flex: 1; }
+.home-card-tag { align-self: flex-start; font-family: var(--sans, sans-serif); font-size: .75rem; font-weight: 600; padding: 2px 8px; background: var(--paper-2, #ebe2cd); }
+.home-card-more { font-family: var(--sans, sans-serif); font-size: .85rem; font-weight: 600; color: var(--accent, #8a2c22); }
+
+/* ---------- Poll ---------- */
+.home-poll-wrap { padding: 20px 0 56px; }
+.home-poll {
+  max-width: 720px; margin: 0 auto; padding: 28px 30px;
+  background: var(--paper-3, #faf6ec); border: 1px solid var(--ink, #1d1b18); box-shadow: 6px 6px 0 var(--ink, #1d1b18);
+}
+.home-poll h3 { margin: 0 0 18px; font-size: 1.35rem; }
+.poll-options { display: flex; flex-direction: column; gap: 10px; }
+.poll-option {
+  text-align: left; padding: 12px 16px; font: inherit; font-family: var(--sans, sans-serif); font-weight: 600;
+  background: transparent; border: 1px solid var(--ink, #1d1b18); cursor: pointer; color: var(--ink, #1d1b18);
+  transition: background .15s;
+}
+.poll-option:hover { background: var(--paper-2, #ebe2cd); }
+.poll-radio { font-family: monospace; margin-right: 6px; }
+.poll-result { position: relative; padding: 12px 16px; border: 1px solid var(--hair, #cbbfa5); overflow: hidden; display: flex; justify-content: space-between; font-family: var(--sans, sans-serif); font-weight: 600; }
+.poll-result.mine { border-color: var(--accent, #8a2c22); }
+.poll-bar { position: absolute; left: 0; top: 0; bottom: 0; background: var(--paper-2, #ebe2cd); z-index: 0; transition: width .6s; }
+.poll-result.mine .poll-bar { background: #e9cdc8; }
+.poll-label, .poll-pct { position: relative; z-index: 1; }
+.poll-note { margin: 14px 0 0; font-size: .9rem; color: var(--ink-2, #5a5347); }
+
+/* ---------- Footer ---------- */
+footer .footer-links { margin: 0 0 12px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-family: var(--sans, sans-serif); font-size: .95rem; }
+footer .footer-links a { color: inherit; font-weight: 600; }
+footer .footer-sep { opacity: .5; }
+
+@media (max-width: 600px) {
+  section.hero.home-spotlight { padding: 60px 0 50px !important; }
+  .home-poll { padding: 22px 18px; box-shadow: 4px 4px 0 var(--ink, #1d1b18); }
+  footer .footer-sep { display: none; }
+}
+
+
+/* ---------- Editorial finish & accessibility ---------- */
+.skip-link {
+  position: fixed; z-index: 10000; top: 10px; left: 10px;
+  transform: translateY(-160%); padding: 10px 14px;
+  background: var(--paper-3, #faf6ec); color: var(--ink, #1d1b18);
+  border: 2px solid var(--ink, #1d1b18); font-weight: 700;
+}
+.skip-link:focus { transform: translateY(0); }
+.home-spotlight .hero-content::before {
+  content: "✦  МЛАД ЖУРНАЛИСТ  ✦";
+  display: block; width: fit-content; margin: 0 auto 25px; padding: 7px 18px;
+  border-top: 1px solid rgba(244,237,221,.65);
+  border-bottom: 1px solid rgba(244,237,221,.65);
+  font: 700 .72rem/1.4 var(--sans, Arial, sans-serif); letter-spacing: .24em;
+  color: #e8c987;
+}
+.home-spotlight h2 { text-wrap: balance; }
+.home-section-title h2,
+#publications > .container > h2,
+#team > .container > h2,
+#activities > .container > h2 {
+  text-align: center; text-wrap: balance;
+}
+.home-section-title::after {
+  content: "❦"; display: block; margin: 12px auto 0;
+  color: var(--accent, #8a2c22); font-size: 1.15rem;
+}
+.home-card:focus-visible, .poll-option:focus-visible,
+.home-spotlight a:focus-visible, footer a:focus-visible {
+  outline: 3px solid var(--accent, #8a2c22); outline-offset: 4px;
+}
+.poll-option:disabled { opacity: .65; cursor: wait; }
+@media (max-width: 760px) {
+  .home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .home-card-thumb { height: 125px; }
+  .home-card-body { padding: 14px; }
+  .home-card-body h3 { font-size: 1.05rem; }
+}
+@media (max-width: 480px) {
+  .home-grid { grid-template-columns: 1fr; }
+  .home-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+  .home-card-thumb { height: 100%; min-height: 132px; border-bottom: 0; border-right: 1px solid var(--hair, #cbbfa5); }
+  .home-card-body { padding: 13px; gap: 6px; }
+  .home-card-body p { font-size: .9rem; }
+  .home-spotlight .hero-content::before { letter-spacing: .15em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Live editorial article cards used by the public archive widget */
+#articlesContainer.articles-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px!important;border:0!important;align-items:stretch}
+#articlesContainer .editorial-article-card{display:flex;flex-direction:column;min-width:0;padding:0!important;background:var(--paper-3,#faf6ec)!important;border:1px solid var(--hair,#cbbfa5)!important;box-shadow:3px 3px 0 var(--hair,#cbbfa5)!important;position:relative;overflow:hidden}
+#articlesContainer .article-card-image{display:flex;align-items:center;justify-content:center;width:100%;height:190px;overflow:hidden;background:var(--paper-2,#ebe2cd);text-decoration:none}
+#articlesContainer .article-card-image img{width:100%;height:100%;object-fit:cover}
+#articlesContainer .article-card-image.no-image span{font-family:var(--head,Georgia,serif);font-size:1.5rem;line-height:1;color:#9e9074;letter-spacing:.12em;text-align:center}
+#articlesContainer .article-card-content{display:flex;flex-direction:column;flex:1;padding:18px}
+#articlesContainer .article-card-title{margin:8px 0;font-size:1.4rem;line-height:1.15}
+#articlesContainer .article-card-excerpt{font-family:var(--serif,Georgia,serif);font-size:1rem;line-height:1.5}
+#articlesContainer .article-card-meta{margin-top:auto;padding-top:12px;gap:12px;flex-wrap:wrap}
+#articlesContainer .article-pick{position:absolute;z-index:2;top:9px;left:9px;padding:5px 8px;background:rgba(250,246,236,.94);font-size:.7rem}
+#articlesContainer .lead-card{grid-column:span 2;display:grid;grid-template-columns:1.1fr .9fr;align-items:stretch}
+#articlesContainer .lead-card .article-card-image{height:100%;min-height:330px}
+#articlesContainer .lead-card .article-card-content{padding:24px}
+#articlesContainer .lead-card .article-card-title{font-size:clamp(1.6rem,2.7vw,2.3rem)}
+@media(max-width:900px){#articlesContainer.articles-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#articlesContainer .lead-card{grid-column:span 2}}
+@media(max-width:600px){#articlesContainer.articles-grid{grid-template-columns:1fr}#articlesContainer .lead-card{grid-column:auto;display:flex}#articlesContainer .lead-card .article-card-image{height:190px;min-height:0}#articlesContainer .article-card-image{height:190px}}
+
+/* Final art direction: independent student newspaper, not a generic school portal */
+:root{--accent:#a9362b;--paper:#f2ecdf;--paper-2:#e7dece;--paper-3:#fbf8f0;--ink:#171715;--hair:#c9bead}
+body{background:var(--paper)!important;color:var(--ink)}
+header{background:rgba(251,248,240,.97)!important;border-bottom:4px double var(--ink)!important;box-shadow:none!important}
+header .container{max-width:1320px;align-items:center;gap:24px}
+.logo h1{font-size:clamp(2rem,4vw,3.7rem)!important;letter-spacing:-.055em;line-height:.95}
+.logo p{font-family:var(--sans);font-size:.66rem;letter-spacing:.19em;text-transform:uppercase}
+nav ul{gap:8px 15px;flex-wrap:wrap}
+nav ul li a{font-family:var(--sans);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+nav ul li a:hover{color:var(--accent)}
+.home-spotlight{min-height:470px!important;display:flex;align-items:center;position:relative;overflow:hidden;text-align:left!important;background:#1b1b19!important;border-bottom:5px double var(--accent)!important}
+.home-spotlight:after{content:"МЖ";position:absolute;right:2vw;bottom:-.28em;font:900 clamp(13rem,32vw,29rem)/.8 var(--head);color:rgba(255,255,255,.045);pointer-events:none}
+.home-spotlight .container{position:relative;z-index:1;width:min(1160px,92%);margin:auto}
+.home-spotlight .hero-content{max-width:900px;margin:0}
+.home-spotlight h2{font-size:clamp(3rem,7.4vw,7rem)!important;line-height:.94!important;letter-spacing:-.055em;text-align:left!important;max-width:900px}
+.home-spotlight .spot-text{max-width:650px;text-align:left;margin:0 0 25px;font-size:clamp(1rem,1.5vw,1.25rem)}
+.home-spotlight .spot-kicker{color:#e4c27f;letter-spacing:.2em}
+.spot-actions{justify-content:flex-start}
+.spot-welcome{text-align:left;max-width:630px;color:#cfc5b3}
+.home-sections-wrap,.home-poll-wrap{padding:72px 0}
+.home-section-title{text-align:left;border-bottom:1px solid var(--ink);padding-bottom:17px;margin-bottom:28px;display:flex;align-items:end;justify-content:space-between;gap:24px}
+.home-section-title h2{font-size:clamp(2rem,4.5vw,3.7rem);letter-spacing:-.045em;margin:0;text-align:left}
+.home-section-title p{max-width:340px;text-align:right;margin:0}
+.home-section-title:after{display:none!important}
+.home-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.home-card{border:0;border-top:4px solid var(--ink);background:transparent;box-shadow:none!important;border-radius:0}
+.home-card:hover{transform:translateY(-4px);box-shadow:none!important}
+.home-card-thumb{height:190px;background:var(--paper-2);border-radius:0}
+.home-card-body{padding:17px 0 20px;border-bottom:1px solid var(--hair)}
+.home-card-body h3{font-size:1.5rem;line-height:1.05;letter-spacing:-.035em}
+.home-card-tag{background:transparent;padding:0;color:var(--accent);font-size:.67rem;letter-spacing:.12em;text-transform:uppercase}
+.home-card-more{color:var(--accent)}
+#publications,#team,#activities,#contact,#calendar{padding-top:65px;padding-bottom:65px}
+#publications h2,#team h2,#activities h2,#contact h2,#calendar h2{font-size:clamp(2rem,4.5vw,3.6rem);letter-spacing:-.04em;text-align:left}
+.home-poll{border:1px solid var(--ink);border-radius:0;box-shadow:9px 9px 0 var(--accent);padding:clamp(22px,4vw,42px);background:var(--paper-3)}
+.home-poll h3{font-size:clamp(1.5rem,3vw,2.1rem)}
+.contact-form,.contact-info{border-radius:0!important}
+.contact-form{border-top:4px solid var(--accent)}
+footer{background:var(--paper-2)!important;border-top:5px double var(--ink)!important}
+@media(max-width:900px){.home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-spotlight .container{width:90%}}
+@media(max-width:620px){header .container{align-items:flex-start}.home-section-title{display:block}.home-section-title p{text-align:left;margin-top:9px}.home-grid{grid-template-columns:1fr}.home-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px}.home-card-thumb{height:100%;min-height:140px}.home-card-body{padding:10px 0}.home-spotlight h2{font-size:clamp(2.6rem,12vw,4.4rem)!important}.home-spotlight:after{right:-.1em;font-size:13rem}}
