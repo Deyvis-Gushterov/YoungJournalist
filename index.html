@@ -1,179 +1,680 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Cozy Stall — Handmade Digital Goods</title>
-<meta name="description" content="A small stall selling handmade digital planners and custom software, made with care." />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Млад журналист — училищен вестник</title>
+    <meta name="description" content="Млад журналист — дигиталният училищен вестник. Истории, интервюта, творчество, полезни съвети и новини от училищния живот.">
+    <meta name="theme-color" content="#1d1b18">
+    <link rel="stylesheet" href="css-style.css">
+    
+    
+    <style>
+        
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+        
+        
+        
+        .btn {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(0);
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+        
+        
+        .activity-card, .publication-card, .team-member {
+            transition: all 0.4s ease;
+            transform: translateY(0);
+        }
+        
+        .activity-card:hover, .publication-card:hover, .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        
+        .member-photo {
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .team-member:hover .member-photo {
+            transform: scale(1.08);
+        }
+        
+        
+        header {
+            transition: all 0.4s ease;
+        }
+        
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+        }
+        
+        
+        .contact-form input,
+        .contact-form textarea {
+            transition: all 0.3s ease;
+            transform: translateX(0);
+        }
+        
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 0 rgba(44, 62, 80, 0.1);
+        }
+        
+        
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #3498db;
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        
+        .team img[alt="Нашият екип"] {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .team img[alt="Нашият екип"]:hover {
+            transform: scale(1.03) rotate(1deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+    
+   
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js-auth-firebase-config.js"></script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="js-articles-form-handler.js"></script>
+    <script src="js-calendar-public-calendar.js"></script>
+    
+    
+    <script src="js-articles-articles-list.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap&subset=cyrillic" rel="stylesheet">
+    <link rel="stylesheet" href="css-vintage.css">
+    <link rel="stylesheet" href="css-home-redesign.css">
+<link rel="stylesheet" href="css-complete-redesign.css">
+<link rel="stylesheet" href="css-broadcast-intro.css">
 
-<link rel="stylesheet" href="style.css" />
+<style id="mobile-newspaper-access-fix">
+  .mobile-newspaper-shortcut { display: none; }
+  @media (max-width: 767px) {
+    .mobile-newspaper-shortcut {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      position: fixed; right: 16px; bottom: max(16px, env(safe-area-inset-bottom));
+      z-index: 1200; padding: 13px 19px; border-radius: 999px;
+      background: #9f2929; color: #fff !important; text-decoration: none !important;
+      font: 700 15px/1 Inter, Arial, sans-serif; letter-spacing: .01em;
+      box-shadow: 0 6px 22px rgba(35, 20, 20, .28);
+      border: 1px solid rgba(255,255,255,.22);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-newspaper-shortcut:active { transform: scale(.97); }
+    .mobile-newspaper-shortcut:focus-visible { outline: 3px solid #222; outline-offset: 3px; }
+  }
+</style>
 </head>
 <body>
+    <a class="skip-link" href="#home">Към основното съдържание</a>
+    
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Млад журналист</h1>
+                <p>Училищен клуб по журналистика</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Начало</a></li>
+                    <li><a href="page-articles.html">Статии</a></li><li><a href="page-newspaper.html">Вестник</a></li>
+                    <li><a href="page-calendar.html">Календар</a></li>
+                    <li><a href="page-polls.html">Анкети</a></li>
+                    <li><a href="#publications">Публикации</a></li>
+                    <li><a href="page-rubrics-public.html?type=sec:school">Училищен живот</a></li>
+                    <li><a href="page-rubrics-public.html?type=sec:creative">Творчество</a></li>
+                    <li><a href="page-rubrics-public.html?type=sec:useful">Полезно</a></li>
+                    <li><a href="page-rubrics-public.html?type=sec:fun">Забавление</a></li>
+                    <li><a href="#team">Екип</a></li>
+                    <li><a href="#contact">Контакти</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<!-- ============ ENTRANCE OVERLAY ============ -->
-<div id="entrance" aria-hidden="false">
-  <div class="entrance-inner">
-    <svg class="lantern" width="56" height="72" viewBox="0 0 56 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="28" y1="0" x2="28" y2="10" stroke="#6E2F42" stroke-width="2"/>
-      <rect x="14" y="10" width="28" height="6" rx="2" fill="#6E2F42"/>
-      <path id="lanternGlow" d="M18 16 Q18 12 28 12 Q38 12 38 16 L40 52 Q40 60 28 60 Q16 60 16 52 Z" fill="#E8A33D"/>
-      <rect x="14" y="58" width="28" height="6" rx="2" fill="#6E2F42"/>
-      <line x1="28" y1="64" x2="28" y2="70" stroke="#6E2F42" stroke-width="2"/>
-    </svg>
-    <p class="entrance-label">warming up the lanterns…</p>
-    <h1 class="entrance-title">The&nbsp;Cozy&nbsp;Stall</h1>
-    <button id="enterBtn" class="enter-btn">Step inside <span aria-hidden="true">→</span></button>
-    <p class="entrance-hint">(turns the lights on, and the music too — if you'd like it)</p>
+    
+    <!-- ★ Акцент на месеца (content: js-home-home-config.js) -->
+    <section id="home" class="hero home-spotlight" aria-label="Акцент на месеца">
+        <div class="container">
+            <div class="hero-content" id="homeSpotlight"></div>
+            <p class="spot-welcome">Добре дошли в „Млад журналист“ – откриваме историите около нас и им даваме глас!</p>
+        </div>
+    </section>
+
+    <!-- 4 sections: latest rubric from each (js-home-home-widgets.js) -->
+    <section id="rubrics-home" class="home-sections-wrap">
+        <div class="container">
+            <div class="home-section-title">
+                <h2>В този брой</h2>
+                <p>Избери рубрика и разгледай всички материали.</p>
+            </div>
+            <div class="home-grid" id="homeSections"></div>
+        </div>
+    </section>
+
+    <!-- Interactive poll -->
+    <section id="poll" class="home-poll-wrap">
+        <div class="container">
+            <div class="home-poll" id="homePoll"></div>
+            <p style="text-align:center;margin-top:18px"><a class="btn" href="page-polls.html">Всички анкети →</a></p>
+        </div>
+    </section>
+
+    
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="scroll-animate">За клуба</h2>
+            <div class="about-content">
+                <div class="about-text scroll-animate delay-1">
+                    <p>Млад журналист е място за ученици, които се интересуват от писане, репортажи, фотография и медии. Ние се стремим да развием уменията за критично мислене, изследователска работа и ефективна комуникация.</p>
+                    <p>Чрез нашите дейности, членовете на клуба научават как да създават качествени журналистически материали, да интервюират и да представят информация по интересен и достъпен начин.</p>
+                </div>
+                <div class="about-image scroll-animate delay-2">
+                    <img src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Снимка на журналистическа дейност">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="activities" class="activities">
+        <div class="container">
+            <h2 class="scroll-animate">Нашите дейности</h2>
+            <div class="activities-grid">
+                <div class="activity-card scroll-animate delay-1">
+                    <h3>Писане на статии</h3>
+                    <p>Учим се да пишем за училищния вестник, уебсайта и социалните мрежи.</p>
+                </div>
+                <div class="activity-card scroll-animate delay-2">
+                    <h3>Фотография</h3>
+                    <p>Запознаване с основите на фотографията за журналистически цели.</p>
+                </div>
+                <div class="activity-card scroll-animate delay-3">
+                    <h3>Интервюта</h3>
+                    <p>Упражняваме техники за провеждане на интервюта с интересни личности.</p>
+                </div>
+                <div class="activity-card scroll-animate delay-4">
+                    <h3>Медийна грамотност</h3>
+                    <p>Анализираме медийно съдържание и учим как да разпознаваме фалшиви новини.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="publications" class="publications">
+        <div class="container">
+            <h2 class="scroll-animate">Нашите публикации</h2>
+            
+            <div class="search-container scroll-animate delay-1">
+                <input type="text" id="articleSearch" placeholder="Търсене в заглавията на статиите..." class="search-input">
+                <button id="clearSearch" class="clear-search-btn"></button>
+            </div>
+            
+            <div id="searchResultsInfo" class="search-results-info scroll-animate delay-1"></div>
+            
+            
+            <div id="newspaperControls" class="newspaper-controls scroll-animate delay-2" style="display: none;">
+                <div class="selected-count">
+                    <span id="selectedCount">0</span> статии избрани
+                </div>
+                <button id="createNewspaperBtn" class="btn btn-primary">
+                    Създай вестник
+                </button>
+                <button id="clearSelectionBtn" class="btn btn-secondary">
+                    Изчисти избора
+                </button>
+            </div>
+            
+            <div id="articlesContainer" class="articles-grid">
+                
+            </div>
+        </div>
+    </section>
+
+    
+    <div id="newspaperModal" class="newspaper-modal">
+        <div class="newspaper-modal-content scroll-animate">
+            <div class="newspaper-modal-header">
+                <h2>Вашият цифров вестник</h2>
+                <button id="closeNewspaperBtn" class="close-btn"></button>
+            </div>
+            <div class="newspaper-modal-body">
+                <div id="newspaperLoading" class="newspaper-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Създаване на вестника... Може да отнеме няколко секунди.</p>
+                </div>
+                <div id="newspaperContent" class="newspaper-content" style="display: none;"></div>
+            </div>
+            <div class="newspaper-modal-footer">
+                <button id="downloadNewspaperBtn" class="btn btn-primary">Изтегли PDF</button>
+                <button id="shareNewspaperBtn" class="btn btn-secondary">Сподели</button>
+                <button id="printNewspaperBtn" class="btn">Принтирай</button>
+            </div>
+        </div>
+    </div>
+
+    
+<section id="team" class="team">
+    <div class="container">
+        <h2 class="scroll-animate">Нашият екип</h2>
+        
+        
+        <div style="display: flex; justify-content: center; margin: 60px 0;" class="scroll-animate">
+            <img src="img-team-photo.png" alt="Нашият екип" 
+                 style="width: 450px; height: 450px; border-radius: 25px; object-fit: cover; border: 6px solid #ffffff; 
+                        box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.1);
+                        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));">
+        </div>
+
+        <div class="team-grid">
+            
+            <div class="team-member scroll-animate delay-1">
+                <div class="member-photo">
+                    <img src="img-Kameliq-Aleksandrova.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Ръководител</h3>
+                <p>г-жа Камелия Александрова</p>
+            </div>
+            
+            <div class="team-member scroll-animate delay-1">
+                <div class="member-photo">
+                    <img src="img-Georgi-Jerev.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Фотограф</h3>
+                <p>Георги Жерев</p>
+            </div>
+            
+            <div class="team-member scroll-animate delay-1">
+                <div class="member-photo member-photo-placeholder" data-initials="АТ" role="img" aria-label="Снимка не е добавена — Ася Тулилова"></div>
+                <h3>Фотограф</h3>
+                <p>Ася Тулилова</p>
+            </div>
+            
+            <div class="team-member scroll-animate delay-1">
+                <div class="member-photo">
+                    <img src="img-Yoana-Zlaatinova.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Редактор</h3>
+                <p>Йоана Златинова</p>
+            </div>
+
+            
+            <div class="team-member scroll-animate delay-2">
+                <div class="member-photo">
+                    <img src="img-Rebecca-Mehandjieva.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Репортер</h3>
+                <p>Ребека Механджиева</p>
+            </div>
+            
+            <div class="team-member scroll-animate delay-2">
+                <div class="member-photo member-photo-placeholder" data-initials="ДГ" role="img" aria-label="Снимка не е добавена — Дейвис Гущеров"></div>
+                <h3>Техническа поддръжка</h3>
+                <p>Дейвис Гущеров</p>
+            </div>
+
+            <div class="team-member scroll-animate delay-2">
+                <div class="member-photo">
+                    <img src="img-Temenujka-Georgieva.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Репортер</h3>
+                <p>Теменужка Златинова</p>
+            </div>
+            
+            <div class="team-member scroll-animate delay-2">
+                <div class="member-photo">
+                    <img src="img-Gergana-Ilieva.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Репортер</h3>
+                <p>Гергана Илиева</p>
+            </div>
+
+            
+            <div class="team-member scroll-animate delay-3">
+                <div class="member-photo">
+                    <img src="img-Anna-Malik.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Репортер</h3>
+                <p>Анна Малик</p>
+            </div>
+            
+            <div class="team-member scroll-animate delay-3">
+                <div class="member-photo">
+                    <img src="img-viber_image_2025-11-19_17-50-47-904.jpg" alt="Ръководител" 
+                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <h3>Репортер</h3>
+                <p>Йорданка Митева</p>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+    
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="scroll-animate">Свържете се с нас</h2>
+            <div class="contact-content">
+                <div class="contact-info scroll-animate delay-1">
+                    <h3>Информация</h3>
+                    <p><strong>Имейл:</strong> mladjournalist@abv.bg</p>
+                    <div class="social-links">
+                        <a href="mailto:mladjournalist@abv.bg?subject=Новина%20за%20редакцията">Изпрати ни новина ↗</a>
+                    </div>
+                </div>
+                <div class="contact-form scroll-animate delay-2">
+                    <h3>Стани част от екипа</h3>
+                    <form id="joinForm">
+                        <input type="text" id="name" placeholder="Име" required>
+                        <input type="email" id="email" placeholder="Имейл" required>
+                        <input type="text" id="class" placeholder="Клас" required>
+                        <label for="desiredRole">В каква роля искаш да се включиш?</label>
+                        <select id="desiredRole" required><option value="reporter">Репортер / автор</option><option value="photographer">Фотограф</option><option value="designer">Дизайнер / уеб администратор</option><option value="redactor">Редакторски екип</option></select>
+                        <textarea id="message" placeholder="Защо искаш да се присъединиш? Какво би искал/а да създаваш?" rows="4" required></textarea>
+                        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px" aria-label="Не попълвайте това поле">
+                        <button type="submit" class="btn">Изпрати кандидатстване</button>
+                    </form>
+                    <div id="formMessage" class="form-message"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="calendar" class="calendar scroll-animate">
+        <div class="container">
+            <h2>Предстоящи събития</h2><p><a class="btn" href="page-calendar.html">Отвори пълния календар →</a></p>
+            <div id="publicEventsList" class="public-events-list">
+                
+            </div>
+        </div>
+    </section>
+
+    
+    <footer>
+        <div class="container">
+            <div class="footer-links" id="homeFooterLinks"></div>
+            <p>&copy; 2026 Клуб "Млад Журналист". Всички права запазени.</p>
+        </div>
+    </footer>
+
+ 
+    
+    
+    <script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const scrollElements = document.querySelectorAll('.scroll-animate');
+        
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            scrollElements.forEach(element => observer.observe(element));
+        } else {
+            scrollElements.forEach(element => element.classList.add('visible'));
+        }
+        
+        
+        const header = document.querySelector('header');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        
+        const navLinks = document.querySelectorAll('nav ul li a');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        
+        const teamPhotos = document.querySelectorAll('.member-photo img');
+        
+        teamPhotos.forEach(photo => {
+            photo.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1) rotate(2deg)';
+                this.style.transition = 'transform 0.5s ease';
+            });
+            
+            photo.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0)';
+            });
+        });
+        
+        
+        const buttons = document.querySelectorAll('.btn');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.7);
+                    transform: scale(0);
+                    animation: ripple-animation 0.6s linear;
+                    width: ${size}px;
+                    height: ${size}px;
+                    top: ${y}px;
+                    left: ${x}px;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        
+        const formInputs = document.querySelectorAll('.contact-form input, .contact-form textarea');
+        
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-5px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+        
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+    
+    
+    window.addEventListener('load', function() {
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s ease';
+        
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 100);
+    });
+    </script>
+    
+    
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.querySelector('header');
+    const body = document.body;
+    
+    
+    function handleScroll() {
+        if (window.scrollY > 30) { 
+            header.classList.add('scrolled');
+            body.classList.add('header-scrolled');
+        } else {
+            header.classList.remove('scrolled');
+            body.classList.remove('header-scrolled');
+        }
+    }
+    
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    
+    handleScroll();
+    
+    
+    
+});
+
+window.addEventListener('load', function() {
+    
+    
+});
+</script>
+
+<script src="js-rubrics-rubrics-database.js"></script>
+<script src="js-home-home-config.js"></script>
+<script src="js-polls-core.js"></script>
+<script src="js-home-home-widgets.js"></script>
+<script src="js-auth-auth-system.js"></script>
+
+
+<script>
+(() => {
+  const header = document.querySelector('header');
+  const nav = header && header.querySelector('nav');
+  if (!header || !nav) return;
+  let lastY = window.scrollY;
+  let ticking = false;
+  const update = () => {
+    const currentY = Math.max(0, window.scrollY);
+    const delta = currentY - lastY;
+    if (currentY < 90 || delta < -6) {
+      header.classList.remove('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'false');
+    } else if (delta > 6 && currentY > 140) {
+      header.classList.add('nav-is-hidden');
+      nav.setAttribute('aria-hidden', 'true');
+    }
+    lastY = currentY;
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  }, { passive: true });
+})();
+</script>
+
+<div id="broadcastIntro" role="dialog" aria-label="Млад журналист — сигналът е активен">
+  <div class="broadcast-onair"><i></i>ON AIR</div>
+  <div class="broadcast-core" aria-hidden="true"><span class="broadcast-wave"></span><span class="broadcast-wave"></span><span class="broadcast-wave"></span><span class="broadcast-wave"></span><span class="broadcast-dot"></span>
+    <div class="broadcast-brand"><strong>МЛАД ЖУРНАЛИСТ</strong><small>СИГНАЛЪТ Е АКТИВЕН · БЛАГОЕВГРАД</small></div>
   </div>
+  <div class="broadcast-actions"><button type="button" data-sound>Включи звуков сигнал</button><button type="button" data-skip>Пропусни интрото →</button></div>
 </div>
+<script src="js-broadcast-intro.js"></script>
+<a class="mobile-newspaper-shortcut" href="page-newspaper.html" aria-label="Отвори училищния вестник">
+  <span aria-hidden="true">📰</span> Вестник
+</a>
 
-<!-- ============ STRING LIGHTS (site signature) ============ -->
-<div class="lights-strip" aria-hidden="true">
-  <svg viewBox="0 0 1200 60" preserveAspectRatio="none" class="lights-wire">
-    <path d="M0,10 Q150,55 300,15 Q450,55 600,15 Q750,55 900,15 Q1050,55 1200,15" fill="none" stroke="#4A3226" stroke-width="2"/>
-  </svg>
-  <div class="bulb-row" id="bulbRow"><!-- bulbs injected by JS --></div>
-</div>
-
-<audio id="bgm" loop preload="none">
-  <source src="audio/ambient.mp3" type="audio/mpeg">
-</audio>
-
-<!-- ============ HEADER ============ -->
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a href="#top" class="brand">The Cozy Stall</a>
-    <nav class="main-nav">
-      <a href="#goods">The Goods</a>
-      <a href="#stallkeepers">Stallkeepers</a>
-      <a href="#visit">Visit</a>
-    </nav>
-    <button id="muteToggle" class="mute-toggle" aria-label="Toggle background music">🔈</button>
-  </div>
-</header>
-
-<!-- ============ HERO ============ -->
-<section id="top" class="hero">
-  <div class="wrap hero-inner">
-    <p class="eyebrow">— open late, every day —</p>
-    <h1 class="hero-title">Small-batch digital goods,<br> made by hand.</h1>
-    <p class="hero-sub">Planners stitched together page by page, and software built one careful line at a time. No mass production here — just a little stall, and things worth putting your name on.</p>
-    <a href="#goods" class="cta-primary">See what's on the table →</a>
-  </div>
-  <div class="hero-crates" aria-hidden="true">
-    <div class="crate crate-1"></div>
-    <div class="crate crate-2"></div>
-    <div class="crate crate-3"></div>
-  </div>
-</section>
-
-<!-- ============ GOODS / PRODUCTS ============ -->
-<section id="goods" class="goods">
-  <div class="wrap">
-    <p class="section-eyebrow">what's on the table today</p>
-    <h2 class="section-title">The Goods</h2>
-
-    <div class="goods-slider">
-      <button class="slider-arrow slider-arrow-prev" id="goodsPrev" aria-label="Previous product">‹</button>
-
-      <div class="goods-grid" id="goodsTrack">
-
-        <article class="good-card reveal">
-          <div class="price-tag">€7</div>
-          <div class="good-img"><img src="classic_cover.png" alt="Focus Planner, Classic terracotta theme cover"></div>
-          <h3>Focus Planner — Classic</h3>
-          <p>Warm terracotta &amp; sage. The original — earthy, grounded, a little rustic.</p>
-          <a class="good-link" href="https://8238102078704.gumroad.com" target="_blank" rel="noopener">Bring it home →</a>
-        </article>
-
-        <article class="good-card reveal">
-          <div class="price-tag">€5</div>
-          <div class="good-img"><img src="Screenshot 2026-07-27 152600.png" alt="Focus Planner, Classic terracotta theme cover"></div>
-          <h3>Sticky Notes app</h3>
-          <p>A lightweight, minimalist Sticky Note app for Windows designed to keep your daily tasks, quick ideas, and reminders right where you need them—without the unnecessary clutter.</p>
-          <a class="good-link" href="https://8238102078704.gumroad.com" target="_blank" rel="noopener">Bring it home →</a>
-        </article>
-
-        <article class="good-card reveal good-card-service">
-          <div class="price-tag price-tag-service">from €50</div>
-          <div class="good-img good-img-service" aria-hidden="true">
-            <svg viewBox="0 0 200 160" class="service-illustration">
-              <rect x="20" y="30" width="160" height="100" rx="10" fill="#FAF1E4" stroke="#6E2F42" stroke-width="2"/>
-              <rect x="36" y="46" width="70" height="8" rx="4" fill="#E8A33D"/>
-              <rect x="36" y="62" width="110" height="6" rx="3" fill="#D8C6AE"/>
-              <rect x="36" y="76" width="90" height="6" rx="3" fill="#D8C6AE"/>
-              <rect x="36" y="100" width="50" height="18" rx="9" fill="#6E2F42"/>
-            </svg>
-          </div>
-          <h3>Custom Software, Made to Order</h3>
-          <p>Need something built from scratch? APIs, databases, backend features — tell me what you need, and I'll build it with the same care.</p>
-          <a class="good-link" href="https://8238102078704.gumroad.com" target="_blank" rel="noopener">Ask for a quote →</a>
-        </article>
-
-        <article class="good-card reveal">
-          <div class="price-tag">€14</div>
-          <div class="good-img"><img src="The-cozy-stall-pic1.png" alt="Focus Planner, Classic terracotta theme cover"></div>
-          <h3>The Cozy Stall — Digital Shop Website Template</h3>
-          <p>A single-page, code-based website template for selling digital products — planners, small apps, printables, and more. Built with a warm, handmade "cozy shop" aesthetic and based on the design of our own storefront. Pure HTML/CSS, no framework required — just drop in your own text, images, and links.</p>
-          <a class="good-link" href="https://8238102078704.gumroad.com" target="_blank" rel="noopener">Bring it home →</a>
-        </article>
-
-      </div>
-
-      <button class="slider-arrow slider-arrow-next" id="goodsNext" aria-label="Next product">›</button>
-    </div>
-
-    <div class="goods-dots" id="goodsDots" aria-hidden="true"></div>
-  </div>
-</section>
-
-<!-- ============ COLLABORATORS ============ -->
-<section id="stallkeepers" class="stallkeepers">
-  <div class="wrap">
-    <p class="section-eyebrow">the hands behind the stall</p>
-    <h2 class="section-title">Meet the Stallkeepers</h2>
-    <p class="section-sub">Every good stall has more than one pair of hands. Here's who helps make these things.</p>
-
-    <div class="keepers-grid">
-      <div class="keeper-card reveal" style="--tilt: -3deg;">
-        <div class="tape"></div>
-        <img class="keeper-avatar" src="https://api.dicebear.com/9.x/notionists/svg?seed=Dashy&backgroundColor=fbeee6" alt="">
-        <h3>Dashy</h3>
-        <p class="keeper-role">Builder &amp; stallkeeper</p>
-        <p class="keeper-note">Backend developer, planner designer, and the one who opens up shop every morning.</p>
-      </div>
-
-      <div class="keeper-card reveal" style="--tilt: 2deg;">
-        <div class="tape"></div>
-        <img class="keeper-avatar" src="https://api.dicebear.com/9.x/notionists/svg?seed=Collaborator1&backgroundColor=f3e8f0" alt="">
-        <h3>Maggie</h3>
-        <p class="keeper-role">Creativity advisor</p>
-        <p class="keeper-note">The mind behind all the product's designs and features.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============ VISIT / FOOTER ============ -->
-<footer id="visit" class="site-footer">
-  <div class="wrap footer-inner">
-    <div>
-      <h2 class="footer-title">Come by again</h2>
-      <p class="footer-sub">New goods get laid out on the table every so often. No rush — the lantern's always lit.</p>
-      <a href="https://8238102078704.gumroad.com" target="_blank" rel="noopener" class="cta-primary cta-footer">Visit the full stall on Gumroad →</a>
-    </div>
-    <div class="footer-meta">
-      <p>The Cozy Stall</p>
-      <p class="muted">Handmade digital goods, since 2026.</p>
-    </div>
-  </div>
-</footer>
-
-<script src="script.js"></script>
 </body>
 </html>
