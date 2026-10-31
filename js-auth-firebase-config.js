@@ -29,8 +29,12 @@
             window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
                 .catch(err => console.warn('Firebase Auth persistence:', err.code || err.message));
         }
-        if (!window.db) console.error('Firebase Realtime Database SDK липсва.');
-        if (!window.auth) console.error('Firebase Authentication SDK липсва.');
+        // Report missing SDKs only when the compat constructors are genuinely absent.
+        // A missing global firebaseConfig is expected: configuration is intentionally scoped here.
+        if (typeof firebase.database !== 'function') console.error('Firebase Realtime Database SDK не е зареден.');
+        if (typeof firebase.auth !== 'function') console.error('Firebase Authentication SDK не е зареден.');
+        window.firebaseServices = { app: firebase.app(), db: window.db, auth: window.auth };
+
     } catch (error) {
         window.firebaseReady = false;
         window.firebaseInitError = error;

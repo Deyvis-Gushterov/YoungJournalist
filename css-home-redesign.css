@@ -191,3 +191,14 @@ nav ul li a:hover{color:var(--accent)}
 footer{background:var(--paper-2)!important;border-top:5px double var(--ink)!important}
 @media(max-width:900px){.home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-spotlight .container{width:90%}}
 @media(max-width:620px){header .container{align-items:flex-start}.home-section-title{display:block}.home-section-title p{text-align:left;margin-top:9px}.home-grid{grid-template-columns:1fr}.home-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px}.home-card-thumb{height:100%;min-height:140px}.home-card-body{padding:10px 0}.home-spotlight h2{font-size:clamp(2.6rem,12vw,4.4rem)!important}.home-spotlight:after{right:-.1em;font-size:13rem}}
+
+
+/* Article thumbnails are editorial photography: always display in full colour. */
+#articlesContainer .article-card-image img,
+#articlesContainer .editorial-article-card img,
+#articlesContainer .lead-card img {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}

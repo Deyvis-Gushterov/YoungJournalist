@@ -12,7 +12,7 @@
     reporter: 'Репортер', photographer: 'Фотограф', designer: 'Дизайнер', user: 'Читател'
   };
   const permissions = {
-    admin: ['articles','rubrics','events','applications','team','media','spotlight','polls'],
+    admin: ['articles','rubrics','events','applications','team','media','spotlight','polls','newspaper'],
     redactor: ['articles','rubrics','events'],
     editor: ['articles','rubrics','events'],
     reporter: ['articles'],

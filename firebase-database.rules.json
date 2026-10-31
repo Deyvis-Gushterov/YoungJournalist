@@ -87,7 +87,7 @@
         "votes": {
           ".read": true,
           "$voterId": {
-            ".write": "!data.exists() && root.child('polls').child($pollId).child('status').val() === 'active' && newData.child('option').isNumber() && newData.child('option').val() >= 0 && newData.child('option').val() < root.child('polls').child($pollId).child('options').numChildren()"
+            ".write": "!data.exists() && root.child('polls').child($pollId).child('status').val() === 'active' && newData.child('option').isNumber() && newData.child('option').val() >= 0 && newData.child('option').val() <= 7"
           }
         }
       }
@@ -103,6 +103,18 @@
         "$articleId": {
           ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'redactor' || root.child('users').child(auth.uid).child('role').val() === 'editor')"
         }
+      }
+    },
+    "newspaperIssues": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "$issueId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+      }
+    },
+    "publishedNewspaperIssues": {
+      ".read": true,
+      "$issueId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
       }
     }
   }

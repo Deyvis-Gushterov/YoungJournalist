@@ -136,7 +136,7 @@
     <link rel="stylesheet" href="css-vintage.css">
     <link rel="stylesheet" href="css-home-redesign.css">
 <link rel="stylesheet" href="css-complete-redesign.css">
-</head>
+<link rel="stylesheet" href="css-broadcast-intro.css">\n</head>
 <body>
     <a class="skip-link" href="#home">Към основното съдържание</a>
     
@@ -149,7 +149,7 @@
             <nav>
                 <ul>
                     <li><a href="#home">Начало</a></li>
-                    <li><a href="page-articles.html">Статии</a></li>
+                    <li><a href="page-articles.html">Статии</a></li><li><a href="page-newspaper.html">Вестник</a></li>
                     <li><a href="page-calendar.html">Календар</a></li>
                     <li><a href="page-polls.html">Анкети</a></li>
                     <li><a href="#publications">Публикации</a></li>
@@ -645,6 +645,14 @@ window.addEventListener('load', function() {
 })();
 </script>
 
+<div id="broadcastIntro" role="dialog" aria-label="Млад журналист — сигналът е активен">
+  <div class="broadcast-onair"><i></i>ON AIR</div>
+  <div class="broadcast-core" aria-hidden="true"><span class="broadcast-wave"></span><span class="broadcast-wave"></span><span class="broadcast-wave"></span><span class="broadcast-wave"></span><span class="broadcast-dot"></span>
+    <div class="broadcast-brand"><strong>МЛАД ЖУРНАЛИСТ</strong><small>СИГНАЛЪТ Е АКТИВЕН · БЛАГОЕВГРАД</small></div>
+  </div>
+  <div class="broadcast-actions"><button type="button" data-sound>Включи звуков сигнал</button><button type="button" data-skip>Пропусни интрото →</button></div>
+</div>
+<script src="js-broadcast-intro.js"></script>
 </body>
 </html>
 
