@@ -64,21 +64,67 @@
     controls.style.display = selected.size ? 'flex' : 'none';
     $('selectedCount') && ($('selectedCount').textContent = selected.size);
   }
-  async function load() {
+   function load() {
     const box = $('articlesContainer');
-    if (!window.db) { if (box) box.innerHTML = '<div class="archive-empty"><h2>Архивът е временно недостъпен</h2><p>Проверете връзката с Firebase Realtime Database.</p></div>'; return; }
-    try {
-      const snap = await window.db.ref('publishedArticles').once('value');
-      articles = [];
-      snap.forEach(child => { const a = child.val() || {}; if (a.status === 'published' || !a.status) articles.push({...a,id:child.key}); });
-      articles.sort((a,b) => new Date(b.publishedAt || b.date || 0) - new Date(a.publishedAt || a.date || 0));
-      await Promise.all(articles.map(resolveArticleImages));
-      render();
-    } catch (error) {
-      console.error('Published articles could not be loaded:', error);
-      if (box) box.innerHTML = `<div class="archive-empty"><h2>Не успяхме да заредим статиите</h2><p>${esc(error.code || error.message)}. Проверете публичния достъп до publishedArticles във Firebase Rules.</p></div>`;
+
+    if (!window.db) {
+        if (box) {
+            box.innerHTML = `
+                <div class="archive-empty">
+                    <h2>Архивът е временно недостъпен</h2>
+                    <p>Проверете връзката с Firebase Realtime Database.</p>
+                </div>`;
+        }
+        return;
     }
-  }
+
+    window.db.ref('publishedArticles').on('value', async snap => {
+        try {
+            const updatedArticles = [];
+
+            snap.forEach(child => {
+                const a = child.val() || {};
+
+                if (a.status === 'published' || !a.status) {
+                    updatedArticles.push({
+                        ...a,
+                        id: child.key
+                    });
+                }
+            });
+
+            updatedArticles.sort((a, b) =>
+                new Date(b.publishedAt || b.date || 0) -
+                new Date(a.publishedAt || a.date || 0)
+            );
+
+            await Promise.all(updatedArticles.map(resolveArticleImages));
+
+            articles = updatedArticles;
+
+            // Remove selections for articles that no longer exist.
+            const existingIds = new Set(articles.map(a => a.id));
+            selected = new Set(
+                [...selected].filter(id => existingIds.has(id))
+            );
+
+            render();
+
+        } catch (error) {
+            console.error('Article rendering failed:', error);
+        }
+    }, error => {
+        console.error('Firebase article listener failed:', error);
+
+        if (box) {
+            box.innerHTML = `
+                <div class="archive-empty">
+                    <h2>Не успяхме да заредим статиите</h2>
+                    <p>${esc(error.message)}</p>
+                </div>`;
+        }
+    });
+}
   function setupSearch() {
     $('articleSearch')?.addEventListener('input', render);
     $('categoryFilter')?.addEventListener('change', render);
