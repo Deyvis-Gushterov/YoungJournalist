@@ -129,43 +129,72 @@
     select.innerHTML = window.RubricsDB.getAllTypes().map(t => `<option value="${esc(t.id)}">${esc(t.icon)} ${esc(t.name)}</option>`).join('');
   }
 
-  async function loadArticles() {
-    const list = $('editorialArticlesList'); if (!list) return;
+ 
+async function loadArticles() {
+    const list = $('editorialArticlesList');
+    if (!list) return;
+
     list.innerHTML = '<p class="muted">Зареждане на статиите…</p>';
+
     try {
-      const [articlesSnap, publishedSnap] = await Promise.all([window.db.ref('articles').once('value'), window.db.ref('publishedArticles').once('value')]);
-      const articleMap = new Map();
+        const [articlesSnap, publishedSnap] = await Promise.all([
+            window.db.ref('articles').once('value'),
+            window.db.ref('publishedArticles').once('value')
+        ]);
 
-articlesSnap.forEach(child => {
-    articleMap.set(child.key, {
-        id: child.key,
-        ...(child.val() || {})
-    });
-});
+        const articleMap = new Map();
 
-publishedSnap.forEach(child => {
-    const existing = articleMap.get(child.key) || {};
-    articleMap.set(child.key, {
-        ...existing,
-        ...(child.val() || {}),
-        id: child.key,
-        status: 'published'
-    });
-});
+        articlesSnap.forEach(child => {
+            articleMap.set(child.key, {
+                id: child.key,
+                ...(child.val() || {})
+            });
+        });
 
-state.articles = [...articleMap.values()]
-    .filter(a =>
-        ['admin', 'redactor', 'editor'].includes(state.role) ||
-        a.authorId === state.user.uid
-    )
-    .sort((a, b) =>
-        Number(b.createdAt || new Date(b.date || 0).getTime()) -
-        Number(a.createdAt || new Date(a.date || 0).getTime())
-    );
-      if (!state.articles.length) { list.innerHTML = '<p class="empty-state">Все още няма статии. Създайте първата от формата по-горе.</p>'; return; }
-      list.innerHTML = state.articles.map(a => `<article class="manage-row"><div class="manage-row-main"><h4>${esc(a.title || 'Без заглавие')}</h4><p>${esc(a.author || 'Неизвестен автор')} · ${shortDate(a.createdAt || a.date)} · ${esc(a.category || '')}</p><p>${esc(a.excerpt || '')}</p><div class="row-actions"><span class="status-pill ${statusClass(a.status)}">${esc(displayStatus(a.status))}</span><button type="button" data-article-action="edit" data-id="${esc(a.id)}">Редактирай</button>${['admin','redactor','editor'].includes(state.role) && ['submitted','approved'].includes(a.status) ? `<button type="button" data-article-action="publish" data-id="${esc(a.id)}">Публикувай</button>` : ''}${can('spotlight') ? `<button class="danger" type="button" data-article-action="delete" data-id="${esc(a.id)}">Изтрий</button>` : ''}</div></div>${safeUrl(a.imageUrl) ? `<img src="${esc(safeUrl(a.imageUrl))}" alt="">` : ''}</article>`).join('');
-    } catch (error) { list.innerHTML = `<p class="empty-state">Неуспешно зареждане: ${esc(error.code || error.message)}. Проверете правилата за достъп до articles.</p>`; }
-  }
+        publishedSnap.forEach(child => {
+            const existing = articleMap.get(child.key) || {};
+            const published = child.val() || {};
+
+            articleMap.set(child.key, {
+                ...existing,
+                ...published,
+                id: child.key,
+                status: 'published'
+            });
+        });
+
+        state.articles = [...articleMap.values()].sort((a, b) =>
+            Number(b.createdAt || new Date(b.date || 0).getTime()) -
+            Number(a.createdAt || new Date(a.date || 0).getTime())
+        );
+
+        if (!state.articles.length) {
+            list.innerHTML = '<p class="empty-state">Все още няма статии  .</p>';
+            return;
+        }
+
+        list.innerHTML = state.articles.map(a => `
+            <article class="manage-row">
+                <div class="manage-row-main">
+                    <h4>${esc(a.title || 'Без заглавие')}</h4>
+                    <p>${esc(a.author || 'Неизвестен автор')} · ${shortDate(a.createdAt || a.date)} · ${esc(a.category || '')}</p>
+                    <p>${esc(a.excerpt || '')}</p>
+                    <div class="row-actions">
+                        <span class="status-pill ${statusClass(a.status)}">${esc(displayStatus(a.status))}</span>
+                        <button type="button" data-article-action="edit" data-id="${esc(a.id)}">Редактирай</button>
+                        ${['admin','redactor','editor'].includes(state.role) && ['submitted','approved'].includes(a.status) ? `<button type="button" data-article-action="publish" data-id="${esc(a.id)}">Публикувай</button>` : ''}
+                        ${can('spotlight') ? `<button class="danger" type="button" data-article-action="delete" data-id="${esc(a.id)}">Изтрий</button>` : ''}
+                    </div>
+                </div>
+                ${safeUrl(a.imageUrl) ? `<img src="${esc(safeUrl(a.imageUrl))}" alt="">` : ''}
+            </article>
+        `).join('');
+
+    } catch (error) {
+        list.innerHTML = `<p class="empty-state">Неуспешно зареждане: ${esc(error.code || error.message)}</p>`;
+    }
+}
+
 
   async function handleArticleSubmit(event) {
     event.preventDefault();

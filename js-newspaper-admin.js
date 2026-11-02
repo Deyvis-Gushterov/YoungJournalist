@@ -7,7 +7,97 @@
     ['Творческа работилница','creative'],['Забавна страница и предстоящи събития','fun']
   ];
   let issueId = null, pages = [];
+  
   const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function editorHtml(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return '';
+
+  const allowed = new Set([
+    'P', 'BR', 'STRONG', 'B', 'EM', 'I', 'U',
+    'H2', 'H3', 'H4', 'UL', 'OL', 'LI', 'BLOCKQUOTE'
+  ]);
+
+  const textarea = document.createElement('textarea');
+
+  function decode(value) {
+    let result = value;
+
+    for (let i = 0; i < 8; i++) {
+      textarea.innerHTML = result;
+      const next = textarea.value;
+
+      if (next === result) break;
+      result = next;
+    }
+
+    return result;
+  }
+
+  function clean(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const decoded = decode(node.textContent);
+
+      if (/<\/?(p|br|strong|b|em|i|u|h[2-4]|ul|ol|li|blockquote)\b[^>]*>/i.test(decoded)) {
+        const parsed = new DOMParser().parseFromString(decoded, 'text/html');
+        const fragment = document.createDocumentFragment();
+
+        [...parsed.body.childNodes].forEach(child => {
+          fragment.append(clean(child));
+        });
+
+        return fragment;
+      }
+
+      return document.createTextNode(decoded);
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return document.createDocumentFragment();
+    }
+
+    if (!allowed.has(node.tagName)) {
+      const fragment = document.createDocumentFragment();
+
+      [...node.childNodes].forEach(child => {
+        fragment.append(clean(child));
+      });
+
+      return fragment;
+    }
+
+    const element = document.createElement(node.tagName.toLowerCase());
+
+    [...node.childNodes].forEach(child => {
+      element.append(clean(child));
+    });
+
+    return element;
+  }
+
+  const parsed = new DOMParser().parseFromString(raw, 'text/html');
+  const output = document.createElement('div');
+
+  [...parsed.body.childNodes].forEach(node => {
+    output.append(clean(node));
+  });
+
+  // Unwrap paragraphs containing only other paragraphs.
+  output.querySelectorAll('p').forEach(p => {
+    if ([...p.children].length > 0 &&
+        [...p.children].every(child => child.tagName === 'P')) {
+      p.replaceWith(...p.childNodes);
+    }
+  });
+
+  output.querySelectorAll('p').forEach(p => {
+    if (!p.textContent.trim() && !p.querySelector('br')) {
+      p.remove();
+    }
+  });
+
+  return output.innerHTML;
+}
   const say = (id,msg,bad=false) => { const el=$(id); if(el){el.textContent=msg;el.classList.toggle('error',bad);} };
   const validUrl = value => { try { const u=new URL(value); return u.protocol==='https:' ? u.href : ''; } catch (_) { return ''; } };
   function drawPages() {
@@ -17,14 +107,19 @@
       <label>Заглавие<input data-field="title" value="${esc(p.title)}" maxlength="120" required></label>
       <label>Тип оформление<select data-field="template">${[['cover','Корица'],['news','Новини / колони'],['interview','Интервю'],['features','Материал със снимка'],['creative','Творчество'],['fun','Забавна страница']].map(([v,t])=>`<option value="${v}" ${p.template===v?'selected':''}>${t}</option>`).join('')}</select></label>
       <label>Подзаглавие<input data-field="subtitle" value="${esc(p.subtitle||'')}" maxlength="180"></label>
-      <label>Текст<textarea data-field="body" rows="5" maxlength="12000" placeholder="Текст на страницата...">${esc(p.body||'')}</textarea></label>
+      <label>Текст на страницата</label>
+      <div class="np-editor-toolbar" role="toolbar" aria-label="Форматиране на текста">
+        <button type="button" data-command="bold" title="Получер"><strong>B</strong></button><button type="button" data-command="italic" title="Курсив"><em>I</em></button><button type="button" data-command="underline" title="Подчертаване"><u>U</u></button>
+        <button type="button" data-block="h2">Заглавие</button><button type="button" data-block="h3">Подзаглавие</button><button type="button" data-command="insertUnorderedList">• Списък</button><button type="button" data-command="insertOrderedList">1. Списък</button><button type="button" data-block="blockquote">Цитат</button><button type="button" data-command="removeFormat">Изчисти</button>
+      </div>
+<div class="np-rich-editor" data-field="body" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Напишете текста на страницата…">${editorHtml(p.body)}</div>
       <label>HTTPS адрес на снимка<input data-field="image" type="url" value="${esc(p.image||'')}" placeholder="https://..."></label>
       <label>Надпис към снимката<input data-field="caption" value="${esc(p.caption||'')}" maxlength="180"></label>
     </article>`).join('') || '<p class="muted">Добавете първата страница към броя.</p>';
   }
   function collectPages() {
     return [...document.querySelectorAll('.np-admin-page')].map(card=>{
-      const val=k=>card.querySelector(`[data-field="${k}"]`).value.trim();
+      const val=k=>{const el=card.querySelector(`[data-field="${k}"]`);return (k==='body'?el.innerHTML:el.value).trim();};
       return {title:val('title'),template:val('template'),subtitle:val('subtitle'),body:val('body'),image:val('image'),caption:val('caption')};
     });
   }
@@ -76,6 +171,8 @@
     $('npSavePages')?.addEventListener('click',savePages);
     $('npRefreshIssues')?.addEventListener('click',loadIssues);
     $('npPagesEditor')?.addEventListener('click',e=>{
+      const tool=e.target.closest('[data-command],[data-block]');
+      if(tool){const card=tool.closest('.np-admin-page'),editor=card?.querySelector('[data-field="body"]');if(!editor)return;editor.focus();if(tool.dataset.command)document.execCommand(tool.dataset.command,false,null);else document.execCommand('formatBlock',false,tool.dataset.block);return;}
       const up=e.target.closest('[data-up]'),down=e.target.closest('[data-down]'),del=e.target.closest('[data-remove]');
       if(!up&&!down&&!del)return; pages=collectPages();
       if(up){const i=+up.dataset.up;[pages[i-1],pages[i]]=[pages[i],pages[i-1]];}
@@ -94,3 +191,4 @@
     });
   });
 })();
+
